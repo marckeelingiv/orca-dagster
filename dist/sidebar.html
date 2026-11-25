@@ -1,0 +1,5132 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>:root {
+  color-scheme: light dark;
+  --bg: var(--orca-background, #14171c);
+  --surface: var(--orca-card, #1b2028);
+  --fg: var(--orca-foreground, #e5e9f0);
+  --muted: var(--orca-muted-foreground, #a0abb9);
+  --line: var(--orca-border, #343b47);
+  --accent: var(--orca-primary, #818cf8);
+  --tint: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  --good: light-dark(#17714c, #67c79c);
+  --warn: light-dark(#8c5912, #edb965);
+  --bad: light-dark(#b33638, #f48380);
+  --mono: var(--orca-font-mono, ui-monospace, monospace);
+}
+html.light {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  color: var(--fg);
+  background: var(--bg);
+  font: 12px/1.4 var(--orca-font-sans, system-ui, sans-serif);
+}
+body > .stack {
+  height: 100%;
+  overflow: auto;
+  gap: 0;
+}
+.stack,
+.field,
+section,
+.item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 7px;
+}
+.row,
+.toolbar,
+nav,
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.wrap {
+  flex-wrap: wrap;
+}
+.muted,
+small,
+dt,
+.subtitle {
+  color: var(--muted);
+}
+.xs,
+small {
+  font-size: 11px;
+}
+h3,
+p,
+dl {
+  margin: 0;
+}
+h3 {
+  font-size: 13px;
+}
+button,
+input,
+select,
+textarea {
+  color: inherit;
+  font: inherit;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+input,
+select,
+textarea {
+  min-width: 0;
+  background: var(--bg);
+  padding: 4px 7px;
+}
+select {
+  text-overflow: ellipsis;
+}
+textarea {
+  resize: vertical;
+  min-height: 5em;
+}
+button,
+summary {
+  cursor: pointer;
+}
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  align-self: flex-start;
+  padding: 3px 8px;
+  min-height: 25px;
+  background: var(--surface);
+  white-space: nowrap;
+}
+button:hover:enabled,
+summary:hover {
+  background: color-mix(in srgb, var(--fg) 7%, var(--surface));
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+button[data-variant='ghost'],
+button.link {
+  background: transparent;
+  border-color: transparent;
+}
+button[data-tone='accent'][data-variant='solid'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--orca-primary-foreground, white);
+  font-weight: 600;
+}
+button[data-tone='danger'],
+.danger {
+  color: var(--bad);
+}
+.warning {
+  color: var(--warn);
+}
+.icon {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon-btn {
+  width: 27px;
+  padding: 0;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.field {
+  gap: 3px;
+}
+.toolbar > .field,
+.row > .field {
+  flex: 1;
+}
+.toolbar[aria-label='Connection'],
+.toolbar[aria-label$=' controls'] {
+  flex: none;
+  padding: 7px 10px 3px;
+  background: var(--surface);
+}
+.toolbar[aria-label='Connection'] select {
+  font-weight: 600;
+  width: 100%;
+}
+.toolbar[aria-label$=' controls'] {
+  padding: 3px 10px 7px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+}
+.toolbar[aria-label$=' controls'] button {
+  font-size: 11px;
+  min-height: 22px;
+  padding: 2px 6px;
+}
+.toolbar[aria-label$=' controls'] > .muted {
+  margin-left: auto;
+  white-space: nowrap;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.badge.success {
+  color: var(--good);
+}
+.badge.danger {
+  color: var(--bad);
+}
+.badge.success,
+.badge.danger,
+.badge.warning {
+  background: color-mix(in srgb, currentColor 9%, transparent);
+  border-color: color-mix(in srgb, currentColor 40%, transparent);
+}
+body > .stack > .stack:last-child {
+  flex: 1;
+  min-height: 0;
+  gap: 0;
+}
+body > .stack > .stack:last-child:not(:has(> .tabs)) {
+  overflow: auto;
+  padding: 10px;
+  gap: 8px;
+}
+.tabs {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+nav {
+  flex: none;
+  gap: 2px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--line);
+}
+nav button {
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 7px 9px 6px;
+}
+nav button[aria-current] {
+  color: var(--fg);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+.tab-panel {
+  min-height: 0;
+  overflow: auto;
+  flex: 1;
+  padding: 10px;
+}
+.tab-dag {
+  display: flex;
+  padding: 0;
+}
+.tab-dag > .stack {
+  flex: 1;
+  min-height: 0;
+  gap: 0;
+}
+.tab-dag > .stack > :not(.graph-stage) {
+  flex-shrink: 0;
+}
+.toolbar[aria-label='Asset selection'] {
+  padding: 8px 10px 4px;
+}
+.toolbar[aria-label='Asset selection'] input {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.toolbar[aria-label='Selection filters'] {
+  gap: 4px;
+  padding: 2px 10px 6px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+.toolbar[aria-label='Selection filters'] button,
+.choice {
+  flex: none;
+  min-height: 19px;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+.toolbar[aria-label='Selection filters'] button {
+  display: block;
+  max-width: 16ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 999px;
+  padding: 1px 6px;
+  color: var(--muted);
+}
+.toolbar[aria-label='Selection filters'] button[data-tone='accent'] {
+  color: var(--fg);
+  background: var(--tint);
+  border-color: var(--accent);
+}
+.choice {
+  gap: 3px;
+  cursor: pointer;
+}
+.choice input {
+  accent-color: var(--accent);
+  margin: 0;
+}
+.toolbar[aria-label='Graph tools'] {
+  position: relative;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--surface);
+  border-block: 1px solid var(--line);
+}
+.toolbar[aria-label='Graph tools'] > details {
+  flex: 1;
+  min-width: 0;
+}
+.toolbar[aria-label='Graph tools'] summary {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 2px 0;
+}
+.toolbar[aria-label='Graph tools'] .field:has(> select) {
+  flex: 0 1 108px;
+}
+.toolbar[aria-label='Graph tools'] > .field select {
+  font-size: 10.5px;
+  padding: 1px 4px;
+}
+.toolbar[aria-label='Graph tools'] details > .stack {
+  max-height: 32vh;
+  overflow: auto;
+  padding: 6px 0;
+}
+section,
+.item {
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.callout {
+  margin: 5px 8px;
+}
+.tab-dag > .stack > .stack {
+  max-height: 30vh;
+  overflow-y: auto;
+  padding: 6px 8px;
+}
+.toolbar[aria-label='Materialization review'] {
+  justify-content: space-between;
+}
+.tab-dag > .stack > section {
+  max-height: 30vh;
+  overflow: auto;
+  margin: 4px 8px;
+}
+.item[aria-current='true'],
+.tree-row[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--tint);
+}
+.tree,
+.scroll,
+pre {
+  overflow: auto;
+}
+[data-max-height='sm'] {
+  max-height: 10rem;
+}
+[data-max-height='md'] {
+  max-height: 19rem;
+}
+[data-max-height='lg'] {
+  max-height: 30rem;
+}
+.tree details {
+  margin-left: 6px;
+}
+summary {
+  padding: 4px;
+  font-weight: 500;
+}
+.tree-row {
+  width: 100%;
+  display: block;
+  text-align: left;
+  border-color: transparent;
+  white-space: normal;
+}
+.tree-row .icon {
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.tree-row small,
+.partition-grid small,
+.calendar small {
+  display: block;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+td,
+th {
+  padding: 5px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+tbody tr {
+  cursor: pointer;
+}
+tbody tr:hover {
+  background: var(--surface);
+}
+dd {
+  margin: 0;
+}
+pre {
+  margin: 0;
+  padding: 6px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--bg);
+  font: 11px/1.5 var(--mono);
+}
+.graph-stage {
+  position: relative;
+  flex: 1 0 180px;
+  min-height: 180px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--muted) 24%, transparent) 1px, transparent 1px)
+      0 0 / 16px 16px,
+    var(--bg);
+}
+.canvas {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  touch-action: none;
+  cursor: grab;
+  scrollbar-width: thin;
+}
+.canvas:active {
+  cursor: grabbing;
+}
+.canvas > svg {
+  display: block;
+  margin: 0 auto 40px;
+}
+.canvas-empty {
+  position: absolute;
+  padding: 15px;
+  color: var(--muted);
+}
+.canvas-footer {
+  position: absolute;
+  bottom: 12px;
+  inset-inline: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none;
+}
+.canvas-hint,
+.zoom {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.canvas-hint {
+  font-size: 10px;
+  padding: 3px 6px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.zoom {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px #0002;
+}
+.zoom button {
+  min-height: 23px;
+  padding: 2px 6px;
+  border: 0;
+  font-size: 11px;
+  background: transparent;
+}
+.zoom .zoom-level {
+  min-width: 40px;
+  font-family: var(--mono);
+}
+.edge {
+  fill: none;
+  stroke: color-mix(in srgb, var(--muted) 65%, transparent);
+  stroke-width: 1.5;
+}
+.edge.active {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.edge.dim {
+  opacity: 0.35;
+}
+.node {
+  cursor: pointer;
+}
+.node-card {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--muted) 55%, var(--surface));
+}
+.node.selected .node-card,
+.node:focus .node-card {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+.node-name {
+  fill: var(--fg);
+  font: 600 12px var(--mono);
+}
+.node .subtitle {
+  fill: var(--muted);
+  font: 11px var(--orca-font-sans, system-ui);
+}
+.node-note {
+  fill: var(--warn);
+  font-size: 9px;
+}
+.status-dot {
+  fill: var(--muted);
+}
+.status-dot.success {
+  fill: var(--good);
+}
+.status-dot.danger {
+  fill: var(--bad);
+}
+.status-dot.warning {
+  fill: var(--warn);
+}
+.check-badge rect {
+  fill: color-mix(in srgb, var(--good) 13%, var(--surface));
+}
+.check-badge text {
+  fill: var(--good);
+  font: 600 10px var(--mono);
+}
+.check-badge.failed text {
+  fill: var(--bad);
+}
+.node.dim {
+  opacity: 0.42;
+}
+.node.running .node-card {
+  stroke: var(--accent);
+  animation: pulse 1.4s infinite;
+}
+@keyframes pulse {
+  50% {
+    stroke-width: 3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .node.running .node-card {
+    animation: none;
+  }
+}
+@media (max-width: 400px) {
+  .toolbar[aria-label$=' controls'] .icon {
+    display: none;
+  }
+  .toolbar[aria-label$=' controls'] .muted > span {
+    display: none;
+  }
+}
+@media (max-width: 280px) {
+  .canvas-hint {
+    display: none;
+  }
+  .canvas-footer {
+    justify-content: flex-end;
+  }
+}
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  text-align: center;
+}
+.calendar button {
+  padding: 3px 0;
+}
+.calendar small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.calendar .success,
+.partition-grid .success {
+  border-color: #459673;
+}
+.calendar .failed,
+.partition-grid .failed {
+  border-color: #d36d56;
+}
+.partition-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 4px;
+}
+.track {
+  position: relative;
+  height: 7px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--fg) 10%, transparent);
+}
+.bar {
+  position: absolute;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+}
+.bar.success {
+  background: #459673;
+}
+.bar.failure,
+.bar.failed {
+  background: #d36d56;
+}
+</style></head><body><script>"use strict";
+(() => {
+  var __defProp = Object.defineProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+
+  // node_modules/preact/dist/preact.mjs
+  var n;
+  var t;
+  var r;
+  var u;
+  var i;
+  var f;
+  var o;
+  var e;
+  var l;
+  var c;
+  var a;
+  var s;
+  var h = /* @__PURE__ */ Symbol.for("pv");
+  var p = {};
+  var y = [];
+  var v = /^m(i|n|o|s|text|space)$/;
+  var w = Array.isArray;
+  var d = y.slice;
+  var _ = Object.assign;
+  function g(n2) {
+    n2 && n2.parentNode && n2.remove();
+  }
+  function k(n2, t3, r3) {
+    var u3, i3, f4, o4 = {}, e3 = arguments.length;
+    for (f4 in t3) "key" == f4 ? u3 = t3[f4] : "ref" == f4 && "function" != typeof n2 ? i3 = t3[f4] : o4[f4] = t3[f4];
+    return e3 > 2 && (o4.children = e3 > 3 ? d.call(arguments, 2) : r3), m(n2, o4, u3, i3, null);
+  }
+  function m(r3, u3, i3, f4, o4) {
+    var e3 = { type: r3, props: u3, key: i3, ref: f4, __k: null, __: null, __b: 0, __e: null, __c: null, constructor: h, __v: o4 || ++t, __i: -1, __u: 0 };
+    return !o4 && n.vnode && n.vnode(e3), e3;
+  }
+  function $(n2) {
+    return n2.children;
+  }
+  function x(n2, t3) {
+    this.props = n2, this.context = t3, this.__g = 0;
+  }
+  function S(n2, t3) {
+    if (null == t3) return n2.__ && S(n2.__, n2.__i + 1);
+    for (var r3; t3 < n2.__k.length; t3++) if ((r3 = n2.__k[t3]) && r3.__e) return r3.__e;
+    return "function" != typeof n2.type || n2.props.__P ? null : S(n2);
+  }
+  function C(t3) {
+    var r3, u3 = t3.__v, i3 = u3.__e, f4 = [], o4 = [], e3 = t3.__P;
+    e3 && ((r3 = _({ constructor: h }, u3)).__v = u3.__v + 1, n.vnode && n.vnode(r3), z(e3, r3, u3, t3.__n, e3.namespaceURI, 32 & u3.__u ? [i3] : null, f4, i3 || S(u3), 32 & u3.__u, o4), r3.__v = u3.__v, r3.__.__k[r3.__i] = r3, E(f4, r3, o4), u3.__ = u3.__e = null, r3.__e != i3 && j(r3));
+  }
+  function j(n2) {
+    if ((n2 = n2.__) && n2.__c && !n2.props.__P) return n2.__e = null, n2.__k.some(function(t3) {
+      return t3 && (n2.__e = t3.__e);
+    }), j(n2);
+  }
+  function L(t3) {
+    (8 & t3.__g || (t3.__g |= 8, u.push(t3), f++)) && i == n.debounceRendering || ((i = n.debounceRendering) || queueMicrotask)(H);
+  }
+  function H() {
+    try {
+      for (var n2, t3 = 1; u.length; ) u.length > t3 && u.sort(o), n2 = u.shift(), t3 = u.length, 8 & n2.__g && C(n2);
+    } finally {
+      (f = u.length) && (i || queueMicrotask)(H);
+    }
+  }
+  function I(n2, t3, r3, u3, i3, f4, o4, e3, l3, c3, a4) {
+    var s3, h3, v3, w3, d3, _3, g3 = u3.__k || y, k3 = t3.length;
+    for (l3 = q(r3, t3, g3, l3, k3), s3 = 0; s3 < k3; s3++) null != (v3 = r3.__k[s3]) && (h3 = ~v3.__i && g3[v3.__i] || p, v3.__i = s3, _3 = z(n2, v3, h3, i3, f4, o4, e3, l3, c3, a4), w3 = v3.__e, (h3.ref != v3.ref || 8 & h3.__u) && (h3.ref && G(h3.ref, null, v3, h3), v3.ref && a4.push(v3.ref, v3.__c || w3, v3)), d3 = d3 || w3, 4 & v3.__u ? (l3 = A(v3, l3, n2, !h3.__v), h3.__e && (h3.__e = null)) : "function" == typeof v3.type && void 0 !== _3 ? l3 = _3 : w3 && (l3 = w3.nextSibling), v3.__u &= -21);
+    return r3.__e = d3, l3;
+  }
+  function q(n2, t3, r3, u3, i3) {
+    var f4, o4, e3, l3, c3, a4, s3, p3, y3, v3 = r3.length, d3 = v3, _3 = 0, g3 = 0, k3 = n2.__k = Array(i3);
+    for (f4 = 0; f4 < i3; f4++) null != (o4 = t3[f4]) && "boolean" != typeof o4 && "function" != typeof o4 ? ("object" != typeof o4 || o4.constructor === String ? o4 = k3[f4] = m(null, o4) : w(o4) ? o4 = k3[f4] = m($, { children: o4 }) : o4.constructor === h && o4.__b ? o4 = k3[f4] = m(o4.type, o4.props, o4.key, o4.ref, o4.__v) : k3[f4] = o4, l3 = f4 + _3, o4.__ = n2, o4.__b = n2.__b + 1, e3 = null, ~(c3 = o4.__i = P(o4, r3, l3, d3)) && (d3--, (e3 = r3[c3]) && (e3.__u |= 2)), e3 && e3.__v ? (o4.__u |= 16, c3 == l3 - 1 ? _3-- : c3 == l3 + 1 ? _3++ : c3 != l3 && (c3 > l3 ? _3-- : _3++, g3 = 1)) : (~c3 || (i3 > v3 ? _3-- : i3 < v3 && _3++), "function" != typeof o4.type && (o4.__u |= 4))) : k3[f4] = null;
+    if (g3) {
+      for (a4 = [], s3 = [], f4 = 0; f4 < i3; f4++) if ((o4 = k3[f4]) && 16 & o4.__u) {
+        for (_3 = 0, p3 = a4.length; _3 < p3; ) a4[y3 = _3 + p3 >> 1] < o4.__i ? _3 = y3 + 1 : p3 = y3;
+        a4[_3] = o4.__i, s3[f4] = _3 + 1;
+      }
+      for (_3 = a4.length; f4--; ) s3[f4] && (s3[f4] == _3 ? _3-- : k3[f4].__u |= 4);
+    }
+    if (d3) for (f4 = 0; f4 < v3; f4++) !(e3 = r3[f4]) || 2 & e3.__u || (e3.__e == u3 && (u3 = S(e3)), J(e3, e3));
+    return u3;
+  }
+  function A(n2, t3, r3, u3) {
+    var i3, f4, o4, e3;
+    if ("function" == typeof n2.type) {
+      if (n2.props.__P) return t3;
+      if (i3 = n2.__k) for (f4 = 0; f4 < i3.length; f4++) i3[f4] && (i3[f4].__ = n2, t3 = A(i3[f4], t3, r3, false));
+      return t3;
+    }
+    for (t3 && !t3.parentNode && (t3 = S(n2)) && !t3.parentNode && (t3 = null), o4 = n2.__e, e3 = t3; e3 && 8 == e3.nodeType; ) e3 = e3.nextSibling;
+    for (o4 != e3 && (!u3 && r3.moveBefore && o4.parentNode ? r3.moveBefore(o4, t3) : r3.insertBefore(o4, t3 || null)), t3 = o4; (t3 = t3 && t3.nextSibling) && 8 == t3.nodeType && !t3.data.startsWith("$s"); ) ;
+    return t3;
+  }
+  function O(n2, t3) {
+    return t3 = t3 || [], null != n2 && "boolean" != typeof n2 && (w(n2) ? n2.some(function(n3) {
+      O(n3, t3);
+    }) : t3.push(n2)), t3;
+  }
+  function P(n2, t3, r3, u3) {
+    var i3, f4 = n2.key, o4 = n2.type, e3 = t3[r3], l3 = e3 && !(2 & e3.__u);
+    if (null === e3 && null == f4 || l3 && f4 == e3.key && o4 == e3.type) return r3;
+    if (u3 > (l3 ? 1 : 0)) {
+      for (i3 = r3 - 1; i3 >= 0; i3--) if ((e3 = t3[i3]) && !(2 & e3.__u) && f4 == e3.key && o4 == e3.type) return i3;
+      for (i3 = r3 + 1; i3 < t3.length; i3++) if ((e3 = t3[i3]) && !(2 & e3.__u) && f4 == e3.key && o4 == e3.type) return i3;
+    }
+    return -1;
+  }
+  function T(n2, t3, r3) {
+    null == r3 && (r3 = ""), "-" == t3[0] ? n2.setProperty(t3, r3) : n2[t3] = r3;
+  }
+  function N(n2, t3, r3, u3, i3) {
+    var f4, o4;
+    if ("style" == t3) if ("string" == typeof r3) n2.style.cssText = r3;
+    else {
+      if ("string" == typeof u3 && (n2.style.cssText = u3 = ""), u3) for (t3 in u3) r3 && t3 in r3 || T(n2.style, t3);
+      if (r3) for (t3 in r3) u3 && r3[t3] == u3[t3] || T(n2.style, t3, r3[t3]);
+    }
+    else if ("o" == t3[0] && "n" == t3[1]) "function" != typeof r3 && (r3 = null), "function" != typeof u3 && (u3 = null), (n2.__e || (n2.__e = {}))[t3] = r3, r3 && u3 || (o4 = a[t3] || (a[t3] = V(t3)), (n2.__a || (n2.__a = {}))[t3] = c, f4 = t3 != (t3 = t3.replace(l, "$1")), (t3 = t3.slice(2))[0] < "a" && (t3 = t3.toLowerCase()), r3 ? n2.addEventListener(t3, o4, f4) : n2.removeEventListener(t3, o4, f4));
+    else {
+      if ("http://www.w3.org/2000/svg" == i3) t3 = t3.replace(/xlink(H|:h)/, "h").replace(/sName$/, "s");
+      else if ("width" != t3 && "height" != t3 && "href" != t3 && "list" != t3 && "form" != t3 && "tabIndex" != t3 && "download" != t3 && "rowSpan" != t3 && "colSpan" != t3 && "role" != t3 && "popover" != t3 && t3 in n2) try {
+        return void (n2[t3] = null == r3 ? "" : r3);
+      } catch (n3) {
+      }
+      if ("function" == typeof r3) return;
+      null == r3 || false === r3 && "-" != t3[4] ? n2.removeAttribute(t3) : n2.setAttribute(t3, "popover" == t3 && 1 == r3 ? "" : r3);
+    }
+  }
+  function V(t3) {
+    return function(r3) {
+      var u3 = this.__e;
+      if (u3) {
+        if (u3 = u3[t3], null == r3[e]) r3[e] = c++;
+        else if (r3[e] < this.__a[t3]) return;
+        return u3(n.event ? n.event(r3) : r3);
+      }
+    };
+  }
+  function z(t3, r3, u3, i3, f4, o4, e3, l3, c3, a4) {
+    var s3, p3, v3, d3, k3, b, m3, M, C3, j2, L2, H2, q2, A2, O2, P2, T3, N2, V2 = r3.type;
+    if (r3.constructor !== h) return null;
+    128 & u3.__u && (c3 = 32 & u3.__u, s3 = u3.__c.__z) && (r3.__u |= c3, p3 = o4 = [], 8 == s3.nodeType ? l3 = B(s3, o4) : o4.push(s3), l3 = o4[0] || l3), (s3 = n.__b) && s3(r3);
+    n: if ("function" == typeof V2) {
+      v3 = e3.length;
+      try {
+        if (M = r3.props, C3 = (s3 = V2.prototype) && s3.render, j2 = (s3 = V2.contextType) && i3[s3.__c], L2 = s3 ? j2 ? j2.props.value : s3.__ : i3, (d3 = u3.__c) ? (r3.__c = d3, 2 & d3.__g && (d3.__g |= 1)) : (C3 ? r3.__c = d3 = new V2(M, L2) : (r3.__c = d3 = new x(M, L2), d3.constructor = V2, d3.render = K), j2 && j2.sub(d3), d3.state || (d3.state = {}), d3.__n = i3, d3.__g |= 8, d3.__h = [], d3.__k = []), C3 && (d3.__s || (d3.__s = d3.state), V2.getDerivedStateFromProps && (d3.__s == d3.state && (d3.__s = _({}, d3.__s)), _(d3.__s, V2.getDerivedStateFromProps(M, d3.__s)))), k3 = d3.props, b = d3.state, d3.__v = r3, u3.__c) {
+          if (M !== k3 && C3 && !V2.getDerivedStateFromProps && d3.componentWillReceiveProps && d3.componentWillReceiveProps(M, L2), r3.__v == u3.__v && !(8 & d3.__g) || !(4 & d3.__g) && d3.shouldComponentUpdate && false === d3.shouldComponentUpdate(M, d3.__s, L2)) {
+            r3.__v != u3.__v && (d3.props = M, d3.state = d3.__s, d3.__g &= -9), r3.__e = u3.__e, r3.__k = u3.__k, r3.__k.some(function(n2) {
+              n2 && (n2.__ = r3);
+            }), y.push.apply(d3.__h, d3.__k), d3.__k = [], d3.__h.length && e3.push(d3), l3 = S(u3);
+            break n;
+          }
+          d3.componentWillUpdate && d3.componentWillUpdate(M, d3.__s, L2), C3 && d3.componentDidUpdate && d3.__h.push(function() {
+            d3.componentDidUpdate(k3, b, m3);
+          });
+        } else C3 && !V2.getDerivedStateFromProps && d3.componentWillMount && d3.componentWillMount(), C3 && d3.componentDidMount && d3.__h.push(d3.componentDidMount);
+        d3.context = L2, d3.props = M, d3.__P = t3, d3.__g &= -5, H2 = n.__r, q2 = C3 ? 25 : 0;
+        do {
+          d3.__g &= -9, H2 && H2(r3), s3 = d3.render(d3.props, d3.state = d3.__s, d3.context);
+        } while (8 & d3.__g && ++q2 < 25);
+        C3 && (y.push.apply(d3.__h, d3.__k), d3.__k = []), d3.state = d3.__s, d3.getChildContext && (i3 = _({}, i3, d3.getChildContext())), C3 && u3.__c && d3.getSnapshotBeforeUpdate && (m3 = d3.getSnapshotBeforeUpdate(k3, b)), A2 = s3 && s3.type === $ && null == s3.key ? s3.props.children : s3, M.__P && (s3 = l3, f4 = (t3 = M.__P).namespaceURI, c3 = o4 = null, u3.props && u3.props.__P != t3 && (u3.__k.some(function(n2) {
+          n2 && J(n2, n2);
+        }), u3.__k = null), l3 = u3.__k ? S(u3, 0) : null), l3 = I(t3, w(A2) ? A2 : [A2], r3, u3, i3, f4, o4, e3, l3, c3, a4), M.__P && (r3.__e = null, l3 = s3), r3.__u &= -161, p3 && p3.some(g), d3.__h.length && e3.push(d3), 1 & d3.__g && (d3.__g &= -4);
+      } catch (t4) {
+        if (e3.length = v3, r3.__v = null, c3 || o4) if (t4 && t4.then) {
+          if (r3.__u |= 128 | c3, o4) {
+            for (~(T3 = o4.indexOf(l3 || void 0)) || (T3 = o4.length); (N2 = o4[T3 - 1]) && 8 == N2.nodeType; ) T3--;
+            for (; T3 < o4.length; T3++) if (N2 = o4[T3]) if (o4[T3] = null, O2) {
+              if (N2 == P2) break;
+            } else {
+              if (8 != N2.nodeType) break;
+              N2.data.startsWith("$s") && (P2 = B(O2 = N2));
+            }
+          }
+          if (!O2) {
+            for (; l3 && 8 == l3.nodeType && l3.nextSibling; ) l3 = l3.nextSibling;
+            O2 = l3;
+          }
+          (s3 = B(O2 = r3.__c.__z || (r3.__c.__z = O2))) ? (r3.__e = O2, l3 = s3) : r3.__e = l3, l3 = l3 && l3.nextSibling;
+        } else o4 && o4.some(g);
+        else r3.__e = u3.__e;
+        r3.__k || (r3.__k = u3.__k || []), t4 && t4.then || D(r3), n.__e(t4, r3, u3);
+      }
+    } else l3 = r3.__e = F(u3.__e, r3, u3, i3, f4, o4, e3, c3, a4, t3);
+    return (s3 = n.diffed) && s3(r3), l3;
+  }
+  function B(n2, t3) {
+    if (n2 && 8 == n2.nodeType && n2.data.startsWith("$s")) for (var r3 = 1; n2 = n2.nextSibling; ) {
+      if (8 == n2.nodeType) {
+        if (n2.data.startsWith("$s")) r3++;
+        else if (n2.data.startsWith("/$s") && !--r3) return n2;
+      }
+      t3 && t3.push(n2);
+    }
+  }
+  function D(n2) {
+    n2 && (n2.__c && (n2.__c.__g |= 4), n2.__k && n2.__k.some(D));
+  }
+  function E(t3, r3, u3) {
+    for (var i3 = 0; i3 < u3.length; ) G(u3[i3++], u3[i3++], u3[i3++]);
+    n.__c && n.__c(r3, t3), t3.some(function(r4) {
+      try {
+        t3 = r4.__h, r4.__h = [], t3.some(function(n2) {
+          n2.call(r4);
+        });
+      } catch (t4) {
+        n.__e(t4, r4.__v);
+      }
+    });
+  }
+  function F(t3, r3, u3, i3, f4, o4, e3, l3, c3, a4) {
+    var s3, h3, y3, _3, k3, b, m3, M, $2 = u3.props || p, x2 = r3.props, C3 = r3.type;
+    if ("svg" == C3 ? f4 = "http://www.w3.org/2000/svg" : "math" == C3 ? f4 = "http://www.w3.org/1998/Math/MathML" : f4 || (f4 = "http://www.w3.org/1999/xhtml"), o4) {
+      for (s3 = 0; s3 < o4.length; s3++) if ((k3 = o4[s3]) && (C3 ? k3.localName == C3 : 3 == k3.nodeType)) {
+        t3 = k3, o4[s3] = null;
+        break;
+      }
+    }
+    if (!t3) {
+      if (M = a4.ownerDocument || document, !C3) return M.createTextNode(x2);
+      t3 = M.createElementNS(f4, C3, x2.is ? x2 : a4), l3 && (n.__m && n.__m(r3, o4), l3 = false), o4 = null;
+    }
+    if (C3) {
+      if (a4 = "template" == C3 && t3.content || t3, o4 = "textarea" == C3 && null != x2.defaultValue ? null : o4 && d.call(a4.childNodes), !l3 && o4) for ($2 = {}, s3 = 0; s3 < t3.attributes.length; s3++) $2[(k3 = t3.attributes[s3]).name] = k3.value;
+      for (s3 in $2) k3 = $2[s3], "dangerouslySetInnerHTML" == s3 ? y3 = k3 : "children" == s3 || s3 in x2 || "value" == s3 && "defaultValue" in x2 || "checked" == s3 && "defaultChecked" in x2 || N(t3, s3, null, k3, f4);
+      for (s3 in x2) k3 = x2[s3], "children" == s3 ? _3 = k3 : "dangerouslySetInnerHTML" == s3 ? h3 = k3 : "value" == s3 ? b = k3 : "checked" == s3 ? m3 = k3 : l3 && "function" != typeof k3 || $2[s3] === k3 || N(t3, s3, k3, $2[s3], f4);
+      h3 ? (l3 || y3 && (h3.__html == y3.__html || h3.__html == t3.innerHTML) || (t3.innerHTML = h3.__html), r3.__k = []) : (y3 && (t3.textContent = ""), ("foreignObject" == C3 || "http://www.w3.org/1998/Math/MathML" == f4 && v.test(C3)) && (f4 = "http://www.w3.org/1999/xhtml"), I(a4, w(_3) ? _3 : [_3], r3, u3, i3, f4, o4, e3, o4 ? o4[0] : u3.__k && S(u3, 0), l3, c3), o4 && o4.some(g)), l3 && "textarea" != C3 || (s3 = "value", "progress" == C3 && null == b ? t3.removeAttribute(s3) : null == b || b === t3[s3] && ("progress" != C3 || b) || N(t3, s3, b, $2[s3], f4), s3 = "checked", null != m3 && m3 != t3[s3] && N(t3, s3, m3, $2[s3], f4));
+    } else $2 === x2 || l3 && t3.data == x2 || (t3.data = x2);
+    return t3;
+  }
+  function G(t3, r3, u3, i3) {
+    try {
+      "function" == typeof t3 ? r3 ? r3.__x = t3(r3) || 1 : i3 && (i3 = i3.__c || i3.__e) && (r3 = i3.__x) && (i3.__x = null, "function" == typeof r3 ? r3() : t3(null)) : t3.current = r3;
+    } catch (t4) {
+      n.__e(t4, u3);
+    }
+  }
+  function J(t3, r3, u3) {
+    var i3, f4, o4, e3;
+    if (n.unmount && n.unmount(t3), !(i3 = t3.ref) || i3.current && i3.current != t3.__e || G(i3, null, r3, t3), i3 = t3.__c) {
+      if (i3.componentWillUnmount) try {
+        i3.componentWillUnmount();
+      } catch (t4) {
+        n.__e(t4, r3);
+      }
+      i3.__P = i3.__n = null;
+    }
+    if (i3 = t3.__k) for (e3 = 0; e3 < i3.length; e3++) i3[e3] && J(i3[e3], r3, "function" != typeof t3.type || u3 && !t3.props.__P);
+    !u3 && (i3 = t3.__c) && (i3 = i3.__z) && (f4 = B(i3, o4 = [])) && (i3 == t3.__e && o4.some(g), g(f4), g(i3)), u3 || g(t3.__e), t3.__e = t3.__c = t3.__ = null;
+  }
+  function K(n2, t3, r3) {
+    return this.constructor(n2, r3);
+  }
+  function Q(t3, r3) {
+    var u3, i3, f4, o4;
+    n.__ && n.__(t3, r3), 9 == r3.nodeType && (r3 = r3.documentElement), i3 = (u3 = t3 && 32 & t3.__u) ? null : r3.__k, r3.__k = m($, { children: [t3] }), f4 = [], o4 = [], z(r3, r3.__k, i3 || p, p, r3.namespaceURI, i3 ? null : r3.firstChild ? d.call(r3.childNodes) : null, f4, i3 ? i3.__e : r3.firstChild, u3, o4), E(f4, r3.__k, o4), r3.__k.props.children = null;
+  }
+  n = { __e: function(n2, t3, r3, u3) {
+    for (var i3, o4, e3; t3 = t3.__; ) if ((i3 = t3.__c) && !(1 & i3.__g)) {
+      i3.__g |= 4;
+      try {
+        if ((e3 = (o4 = i3.constructor) && o4.getDerivedStateFromError) && i3.setState(o4.getDerivedStateFromError(n2)), i3.componentDidCatch && (i3.componentDidCatch(n2, u3 || {}), e3 = 1), e3 && 8 & i3.__g) return void (i3.__g |= 2);
+      } catch (t4) {
+        n2 = t4;
+      }
+    }
+    throw f = 0, n2;
+  } }, t = 0, r = function(n2) {
+    return null != n2 && n2.constructor === h;
+  }, x.prototype.setState = function(n2, t3) {
+    var r3 = this.__s;
+    r3 && r3 != this.state || (r3 = this.__s = _({}, this.state)), "function" == typeof n2 && (n2 = n2(_({}, r3), this.props)), n2 && (_(r3, n2), this.__v && (t3 && this.__k.push(t3), L(this)));
+  }, x.prototype.forceUpdate = function(n2) {
+    this.__v && (this.__g |= 4, n2 && this.__h.push(n2), L(this));
+  }, x.prototype.render = $, u = [], f = 0, o = function(n2, t3) {
+    return n2.__v.__b - t3.__v.__b;
+  }, e = /* @__PURE__ */ Symbol(), l = /(PointerCapture)$|Capture$/i, c = 0, a = {}, s = 0;
+
+  // node_modules/preact/hooks/dist/hooks.mjs
+  var t2;
+  var r2;
+  var u2;
+  var i2;
+  var o2 = Object.is;
+  var f2 = 0;
+  var c2 = [];
+  var e2 = [];
+  var a2 = n;
+  var v2 = a2.__b;
+  var l2 = a2.__r;
+  var m2 = a2.diffed;
+  var h2 = a2.__c;
+  var s2 = a2.unmount;
+  var p2 = a2.__;
+  function y2(n2, t3) {
+    a2.__h && a2.__h(r2, n2, f2 || t3), f2 = 0;
+    var u3 = r2.__H || (r2.__H = { __: [], __h: [] });
+    return n2 >= u3.__.length && u3.__.push({}), u3.__[n2];
+  }
+  function d2(n2) {
+    return f2 = 1, _2(G2, n2);
+  }
+  function _2(n2, u3, i3) {
+    var f4 = y2(t2++, 2);
+    if (f4.t = n2, !f4.__c && (f4.__ = [i3 ? i3(u3) : G2(void 0, u3), function(n3) {
+      var t3 = (f4.__N || f4.__)[0], r3 = f4.t(t3, n3);
+      o2(t3, r3) || (f4.__N = [r3, f4.__[1]], f4.__c.setState({}));
+    }], f4.__c = r2, !r2.__f)) {
+      r2.__f = true;
+      var c3 = r2.shouldComponentUpdate;
+      r2.shouldComponentUpdate = function(n3, t3, r3) {
+        var u4 = this.__H;
+        if (!u4) return true;
+        var i4 = false, f5 = this.props != n3;
+        if (u4.__.some(function(n4) {
+          n4.__N && (i4 = true, o2(n4.__[0], n4.__N[0]) || (f5 = true));
+        }), c3) {
+          var e3 = c3.call(this, n3, t3, r3);
+          return i4 ? e3 || f5 : e3;
+        }
+        return !i4 || f5;
+      };
+    }
+    return f4.__;
+  }
+  function F2(n2, u3) {
+    var i3 = y2(t2++, 4);
+    !a2.__s && E2(i3.__H, u3) && (i3.__P = false, i3.__ = n2, i3.u = u3, r2.__h.push(i3));
+  }
+  function T2(n2) {
+    return f2 = 5, w2(function() {
+      return { current: n2 };
+    }, []);
+  }
+  function w2(n2, r3) {
+    var u3 = y2(t2++, 7);
+    return E2(u3.__H, r3) && (u3.__ = n2(), u3.__H = r3), u3.__;
+  }
+  function g2() {
+    var n2;
+    do {
+      for (; n2 = e2.shift(); ) try {
+        C2(n2);
+      } catch (t4) {
+        a2.__e(t4, { __: (n2 = n2.__P) && n2.__v });
+      }
+      for (; n2 = c2.shift(); ) {
+        var t3 = n2.__H;
+        if (n2.__P && t3) try {
+          t3.__h.some(C2), t3.__h.some(D2), t3.__h = [];
+        } catch (r3) {
+          t3.__h = [], a2.__e(r3, n2.__v);
+        }
+      }
+    } while (e2.length);
+  }
+  a2.__b = function(n2) {
+    r2 = null, v2 && v2(n2);
+  }, a2.__ = function(n2, t3) {
+    n2 && t3.__k && t3.__k.__m && (n2.__m = t3.__k.__m), p2 && p2(n2, t3);
+  }, a2.__r = function(n2) {
+    l2 && l2(n2), t2 = 0;
+    var i3 = (r2 = n2.__c).__H;
+    i3 && (u2 == r2 ? r2.__h = [] : (i3.__h.some(C2), i3.__h.some(D2), t2 = 0), i3.__h = [], i3.__.some(function(n3) {
+      n3.__N && (n3.__ = n3.__N), n3.u = n3.__N = void 0;
+    })), u2 = r2;
+  }, a2.diffed = function(n2) {
+    m2 && m2(n2);
+    var t3 = n2.__c;
+    t3 && t3.__H && (t3.__H.__h.length && B2(c2.push(t3)), t3.__H.__.some(function(n3) {
+      n3.u && (n3.__H = n3.u);
+    })), u2 = r2 = null;
+  }, a2.__c = function(n2, t3) {
+    t3.some(function(n3) {
+      try {
+        n3.__h.some(C2), n3.__h = n3.__h.filter(function(n4) {
+          return !n4.__ || D2(n4);
+        });
+      } catch (t4) {
+        n3.__h = [function() {
+          throw t4;
+        }];
+      }
+    }), h2 && h2(n2, t3);
+  }, a2.unmount = function(n2) {
+    s2 && s2(n2);
+    var t3, r3, u3 = n2.__c;
+    u3 && u3.__H && (u3.__H.__.some(function(u4) {
+      try {
+        if (u4.__P && u4.__c) {
+          if (void 0 === r3) {
+            for (r3 = n2.__; r3 && (!r3.__c || !r3.__c.__P); ) r3 = r3.__;
+            r3 = r3 && r3.__c;
+          }
+          u4.__P = r3, B2(e2.push(u4));
+        } else C2(u4);
+      } catch (n3) {
+        t3 = n3;
+      }
+    }), u3.__H = void 0, t3 && a2.__e(t3, u3.__v));
+  };
+  var k2 = "function" == typeof requestAnimationFrame;
+  function z2(n2) {
+    var t3, r3 = function() {
+      clearTimeout(u3), k2 && cancelAnimationFrame(t3), setTimeout(n2);
+    }, u3 = setTimeout(r3, 35);
+    k2 && (t3 = requestAnimationFrame(r3));
+  }
+  function B2(n2) {
+    1 != n2 && i2 == a2.requestAnimationFrame || ((i2 = a2.requestAnimationFrame) || z2)(g2);
+  }
+  function C2(n2) {
+    var t3 = r2, u3 = n2.__c;
+    "function" == typeof u3 && (n2.__c = void 0, u3()), r2 = t3;
+  }
+  function D2(n2) {
+    var t3 = r2;
+    n2.__c = n2.__(), r2 = t3;
+  }
+  function E2(n2, t3) {
+    return !n2 || n2.length != t3.length || t3.some(function(t4, r3) {
+      return !o2(t4, n2[r3]);
+    });
+  }
+  function G2(n2, t3) {
+    return "function" == typeof t3 ? t3(n2) : t3;
+  }
+
+  // src/frame/bridge.ts
+  var { plugin, settings } = window.orca;
+  var shell = {
+    openExternal: (url) => window.orca.shell?.openExternal(url) ?? Promise.reject(Error("Open this link in the desktop app."))
+  };
+  var cells = /* @__PURE__ */ new Map();
+  var storeKey = "";
+  var redraw = () => {
+  };
+  var pending = false;
+  var writing = Promise.resolve();
+  function atom(first, initial) {
+    if (arguments.length === 1) return { value: first, initial: first };
+    const cell = { value: initial, initial, key: first };
+    cells.set(cell.key, cell);
+    return cell;
+  }
+  function read(cell) {
+    return cell.value;
+  }
+  function set(cell, value) {
+    if (Object.is(cell.value, value)) return;
+    cell.value = value;
+    if (cell.key && storeKey) {
+      const k3 = storeKey;
+      const snapshot2 = Object.fromEntries([...cells].map(([id, c3]) => [id, c3.value]));
+      writing = writing.then(() => window.orca.storage.set(k3, snapshot2)).catch(() => {
+      });
+    }
+    if (!pending) {
+      pending = true;
+      queueMicrotask(() => {
+        pending = false;
+        redraw();
+      });
+    }
+  }
+  function update(cell, fn) {
+    set(cell, fn(cell.value));
+  }
+  async function mountFrame(draw, setup3) {
+    let revision2 = 0, hydration = Promise.resolve();
+    function restore(workspaceId) {
+      const key = "sidebar." + (workspaceId ?? "global");
+      const seq = ++revision2;
+      storeKey = "";
+      hydration = writing.then(async () => {
+        const saved = await window.orca.storage.get(key).catch(() => null);
+        if (seq !== revision2) return;
+        for (const [id, cell] of cells) {
+          const value = saved && typeof saved === "object" && !Array.isArray(saved) ? saved[id] : void 0;
+          cell.value = typeof value === typeof cell.initial ? value : cell.initial;
+        }
+        storeKey = key;
+      });
+    }
+    const visible = atom(!document.hidden), controller = new AbortController(), subscriptions = [];
+    document.addEventListener("visibilitychange", () => set(visible, !document.hidden), {
+      signal: controller.signal
+    });
+    subscriptions.push(plugin.on("dagster.workspaceChanged", (e3) => restore(e3.workspaceId)));
+    const ctx2 = await window.orca.host.call("workspace.readContext");
+    if (!revision2) restore(ctx2?.workspaceId);
+    async function workspaceReady() {
+      let current2;
+      do {
+        current2 = hydration;
+        await current2;
+      } while (hydration !== current2);
+    }
+    await workspaceReady();
+    redraw = draw;
+    setup3(
+      {
+        visible,
+        subscriptions,
+        signal: controller.signal,
+        panel: { id: "dagster-sidebar" }
+      },
+      workspaceReady
+    );
+    window.addEventListener(
+      "pagehide",
+      () => {
+        controller.abort();
+        subscriptions.forEach((d3) => d3.dispose());
+      },
+      { once: true }
+    );
+    draw();
+  }
+
+  // node_modules/preact/jsx-runtime/dist/jsxRuntime.mjs
+  var f3 = /* @__PURE__ */ Symbol.for("pv");
+  var o3 = 0;
+  function a3(t3, e3, n2, u3, a4, i3) {
+    e3 || (e3 = {});
+    var c3, l3, p3 = e3;
+    if ("ref" in p3 && "function" != typeof t3) for (l3 in p3 = {}, e3) "ref" == l3 ? c3 = e3[l3] : p3[l3] = e3[l3];
+    var s3 = { type: t3, props: p3, key: n2, ref: c3, __k: null, __: null, __b: 0, __e: null, __c: null, constructor: f3, __v: --o3, __i: -1, __u: 0 };
+    return (a4 || i3) && (s3.__source = a4, s3.__self = i3), n.vnode && n.vnode(s3), s3;
+  }
+
+  // src/frame/controls.tsx
+  var Stack = ({ children }) => /* @__PURE__ */ a3("div", { class: "stack", children });
+  var Row = ({ children, wrap, justify }) => /* @__PURE__ */ a3(
+    "div",
+    {
+      class: "row" + (wrap ? " wrap" : ""),
+      style: { justifyContent: justify === "between" ? "space-between" : justify },
+      children
+    }
+  );
+  var Toolbar = ({ children, label }) => /* @__PURE__ */ a3("div", { class: "toolbar", role: "toolbar", "aria-label": label, children });
+  var Text = ({ children, tone, muted, size }) => /* @__PURE__ */ a3("span", { class: [tone, muted && "muted", size].filter(Boolean).join(" "), children });
+  var Badge = ({ children, tone }) => /* @__PURE__ */ a3("small", { class: "badge " + (tone ?? ""), children });
+  var Card = ({ children, title }) => /* @__PURE__ */ a3("section", { children: [
+    title && /* @__PURE__ */ a3("h3", { children: title }),
+    children
+  ] });
+  var Heading = ({ children }) => /* @__PURE__ */ a3("h3", { children });
+  var Callout = ({ children, title, tone }) => /* @__PURE__ */ a3("section", { class: "callout " + (tone ?? ""), role: "status", children: [
+    title && /* @__PURE__ */ a3("strong", { children: title }),
+    children
+  ] });
+  var EmptyState = ({ children, title, description }) => /* @__PURE__ */ a3("section", { children: [
+    /* @__PURE__ */ a3("h3", { children: title }),
+    description && /* @__PURE__ */ a3("p", { children: description }),
+    children
+  ] });
+  var Skeleton = () => /* @__PURE__ */ a3("p", { role: "status", children: "Loading\u2026" });
+  var iconPaths = {
+    refresh: "M13 5a5.5 5.5 0 1 0 .3 5M13 2v3.5H9.5",
+    settings: "M2 4h5m3 0h4M2 8h8m3 0h1M2 12h2m3 0h7M7 2.5v3M10 6.5v3M4 10.5v3",
+    play: "M4.5 2.8 13 8l-8.5 5.2z",
+    stop: "M4 4h8v8H4z",
+    terminal: "M2 3h12v10H2zM4 6l2 2-2 2m4 0h3",
+    check: "m2.5 8 3.5 3.5 7.5-8",
+    error: "M8 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2zm0 3v3m0 2v1",
+    warning: "m8 2 6.5 12h-13zM8 6v3m0 1.5v1",
+    layers: "m8 2 6 3-6 3-6-3zM2 8l6 3 6-3M2 11l6 3 6-3",
+    "open-external": "M8 3h5v5m0-5-7 7m-1-6H2v10h10v-3",
+    copy: "M6 2h8v10H6zM3 5H2v9h8v-1",
+    add: "M8 2v12M2 8h12",
+    collapse: "m10 3-5 5 5 5",
+    bot: "M2 5h12v8H2zM8 2v3M5 8v1m6-1v1",
+    branch: "M4 2v12m0-6c6 0 8-1 8-6",
+    filter: "M2 3h12L9 9v4l-2 1V9z"
+  };
+  function Icon({ name }) {
+    if (!name) return null;
+    return /* @__PURE__ */ a3("svg", { class: "icon", "data-icon": name, "aria-hidden": "true", viewBox: "0 0 16 16", children: /* @__PURE__ */ a3("path", { d: iconPaths[name] ?? "M8 3a5 5 0 1 0 0 10A5 5 0 0 0 8 3z" }) });
+  }
+  var Button = ({
+    children,
+    icon,
+    tone,
+    variant,
+    onPress,
+    disabled,
+    tooltip
+  }) => /* @__PURE__ */ a3(
+    "button",
+    {
+      "data-tone": tone,
+      "data-variant": variant,
+      disabled,
+      title: tooltip,
+      onClick: onPress,
+      children: [
+        /* @__PURE__ */ a3(Icon, { name: icon }),
+        children
+      ]
+    }
+  );
+  var IconButton = ({
+    label,
+    tooltip,
+    icon,
+    tone,
+    variant,
+    onPress,
+    disabled
+  }) => /* @__PURE__ */ a3(
+    "button",
+    {
+      class: "icon-btn",
+      "aria-label": label,
+      title: tooltip ?? label,
+      "data-tone": tone,
+      "data-variant": variant,
+      disabled,
+      onClick: onPress,
+      children: /* @__PURE__ */ a3(Icon, { name: icon })
+    }
+  );
+  var Link = ({ children, onPress }) => /* @__PURE__ */ a3("button", { class: "link", onClick: onPress, children });
+  function Input(p3) {
+    const attrs = {
+      value: p3.value,
+      "aria-invalid": p3.invalid,
+      placeholder: p3.placeholder,
+      maxLength: p3.maxLength,
+      disabled: p3.disabled,
+      onInput: (e3) => p3.onChange?.(e3.currentTarget.value),
+      onKeyDown: (e3) => {
+        if (e3.key === "Enter") p3.onSubmit?.(e3.currentTarget.value);
+      }
+    };
+    return /* @__PURE__ */ a3("label", { class: "field", children: [
+      /* @__PURE__ */ a3("span", { class: p3.labelHidden ? "sr-only" : void 0, children: p3.label }),
+      p3.type === "password" ? /* @__PURE__ */ a3("input", { type: "password", ...attrs }) : p3.type === "search" ? /* @__PURE__ */ a3("input", { type: "search", ...attrs }) : /* @__PURE__ */ a3("input", { type: "text", ...attrs })
+    ] });
+  }
+  var Textarea = (p3) => /* @__PURE__ */ a3("label", { class: "field", children: [
+    /* @__PURE__ */ a3("span", { class: p3.labelHidden ? "sr-only" : void 0, children: p3.label }),
+    /* @__PURE__ */ a3(
+      "textarea",
+      {
+        value: p3.value,
+        placeholder: p3.placeholder,
+        maxLength: p3.maxLength,
+        disabled: p3.disabled,
+        onInput: (e3) => p3.onChange?.(e3.currentTarget.value)
+      }
+    )
+  ] });
+  var Select = (p3) => /* @__PURE__ */ a3("label", { class: "field", children: [
+    /* @__PURE__ */ a3("span", { class: p3.labelHidden ? "sr-only" : void 0, children: p3.label }),
+    /* @__PURE__ */ a3(
+      "select",
+      {
+        value: p3.value ?? p3.defaultValue ?? (p3.placeholder ? "" : void 0),
+        disabled: p3.disabled,
+        onChange: (e3) => p3.onChange?.(e3.currentTarget.value),
+        children: [
+          p3.placeholder && /* @__PURE__ */ a3("option", { disabled: true, value: "", children: p3.placeholder }),
+          p3.options.map((o4) => /* @__PURE__ */ a3("option", { value: o4.value, disabled: o4.disabled, children: o4.label }, o4.value))
+        ]
+      }
+    )
+  ] });
+  var Checkbox = (p3) => /* @__PURE__ */ a3("label", { class: "choice", children: [
+    /* @__PURE__ */ a3(
+      "input",
+      {
+        type: "checkbox",
+        checked: p3.checked,
+        disabled: p3.disabled,
+        onChange: (e3) => p3.onChange?.(e3.currentTarget.checked)
+      }
+    ),
+    p3.label
+  ] });
+  var Switch = Checkbox;
+  function Collapsible({ children, title, defaultOpen }) {
+    const [expanded, setExpanded] = d2(!!defaultOpen);
+    return /* @__PURE__ */ a3("details", { open: defaultOpen, onToggle: (event) => setExpanded(event.currentTarget.open), children: [
+      /* @__PURE__ */ a3("summary", { children: title }),
+      expanded && children
+    ] });
+  }
+  var CodeView = (p3) => /* @__PURE__ */ a3("pre", { "data-max-height": p3.maxHeight, children: p3.code });
+  function RelativeTime({ at, format = "short" }) {
+    const date = new Date(at);
+    if (!Number.isFinite(date.getTime())) return /* @__PURE__ */ a3("span", { children: "\u2014" });
+    const minutes = Math.floor(Math.abs(Date.now() - at) / 6e4);
+    const unit = minutes < 60 ? "minute" : minutes < 1440 ? "hour" : "day";
+    const value = Math.floor(minutes / { minute: 1, hour: 60, day: 1440 }[unit]);
+    const age = format === "long" ? value + " " + unit + (value === 1 ? "" : "s") : value + unit[0];
+    return /* @__PURE__ */ a3("time", { dateTime: date.toISOString(), title: date.toLocaleString(), children: format === "duration" ? age : !minutes ? "just now" : at > Date.now() ? "in " + age : age + " ago" });
+  }
+  var KeyValue = (p3) => /* @__PURE__ */ a3("dl", { children: p3.items.map((item) => /* @__PURE__ */ a3("div", { children: [
+    /* @__PURE__ */ a3("dt", { children: item.label }),
+    /* @__PURE__ */ a3("dd", { children: String(item.value ?? "\u2014") })
+  ] }, item.label)) });
+  var List = Stack;
+  var ListItem = ({
+    children,
+    title,
+    description,
+    current: current2,
+    onPress
+  }) => /* @__PURE__ */ a3("div", { class: "item", "aria-current": current2 || void 0, children: [
+    title && (onPress ? /* @__PURE__ */ a3("button", { onClick: onPress, children: title }) : /* @__PURE__ */ a3("strong", { children: title })),
+    description && /* @__PURE__ */ a3("small", { children: description }),
+    children
+  ] });
+  var Tab = ({ children, value }) => /* @__PURE__ */ a3("div", { class: "tab-panel tab-" + value, children });
+  function Tabs({ children, value, onChange, label }) {
+    const tabs = O(children).filter(r);
+    return /* @__PURE__ */ a3("div", { class: "tabs", children: [
+      /* @__PURE__ */ a3("nav", { "aria-label": label, children: tabs.map((t3) => /* @__PURE__ */ a3(
+        "button",
+        {
+          "aria-current": t3.props.value === value ? "page" : void 0,
+          onClick: () => onChange?.(t3.props.value),
+          children: t3.props.label
+        },
+        t3.props.value
+      )) }),
+      tabs.find((t3) => t3.props.value === value)
+    ] });
+  }
+  function Tree(p3) {
+    function item(n2) {
+      return n2.children ? /* @__PURE__ */ a3("details", { open: p3.defaultExpanded?.includes(n2.key), children: [
+        /* @__PURE__ */ a3("summary", { children: [
+          /* @__PURE__ */ a3(Icon, { name: n2.icon }),
+          n2.label
+        ] }),
+        n2.children.map(item)
+      ] }, n2.key) : /* @__PURE__ */ a3(
+        "button",
+        {
+          class: "tree-row",
+          disabled: n2.disabled,
+          "aria-pressed": p3.selected === n2.key,
+          onClick: () => p3.onSelect?.({ key: n2.key }),
+          children: [
+            /* @__PURE__ */ a3(Icon, { name: n2.icon }),
+            n2.label,
+            /* @__PURE__ */ a3("small", { children: n2.description })
+          ]
+        },
+        n2.key
+      );
+    }
+    return /* @__PURE__ */ a3("div", { class: "tree", "data-max-height": p3.maxHeight, "aria-label": p3.label, children: p3.items.map(item) });
+  }
+  function Table(p3) {
+    return /* @__PURE__ */ a3("div", { class: "scroll", "data-max-height": p3.maxHeight, children: [
+      /* @__PURE__ */ a3("table", { "aria-label": p3.label, children: [
+        /* @__PURE__ */ a3("thead", { children: /* @__PURE__ */ a3("tr", { children: p3.columns.map((c3) => /* @__PURE__ */ a3("th", { children: c3.label }, c3.key)) }) }),
+        /* @__PURE__ */ a3("tbody", { children: p3.rows.map((r3) => {
+          const select = () => p3.onSelectionChange?.({ keys: [r3.key] });
+          const activate = () => p3.onRowAction?.({ key: r3.key });
+          return /* @__PURE__ */ a3(
+            "tr",
+            {
+              tabIndex: r3.disabled ? void 0 : 0,
+              "aria-disabled": r3.disabled,
+              "aria-selected": p3.selected?.includes(r3.key),
+              onClick: () => !r3.disabled && select(),
+              onDblClick: () => !r3.disabled && activate(),
+              onKeyDown: (e3) => {
+                if (r3.disabled || !["Enter", " "].includes(e3.key)) return;
+                e3.preventDefault();
+                if (e3.key === "Enter" && p3.onRowAction) activate();
+                else select();
+              },
+              children: p3.columns.map((c3) => {
+                const v3 = r3.cells[c3.key];
+                return /* @__PURE__ */ a3("td", { children: v3 && typeof v3 === "object" ? /* @__PURE__ */ a3(RelativeTime, { ...v3 }) : String(v3 ?? "") }, c3.key);
+              })
+            },
+            r3.key
+          );
+        }) })
+      ] }),
+      !p3.rows.length && /* @__PURE__ */ a3("p", { children: p3.emptyText }),
+      p3.hasMore && /* @__PURE__ */ a3("button", { disabled: p3.loading, onClick: p3.onLoadMore, children: "Load more" })
+    ] });
+  }
+
+  // src/dagster/layout.ts
+  function computeVerticalDagLayout(assets, options2) {
+    const nodeWidth = options2?.nodeWidth ?? 216;
+    const nodeHeight = options2?.nodeHeight ?? 68;
+    const horizontalGap = options2?.horizontalGap ?? 26;
+    const verticalGap = options2?.verticalGap ?? 54;
+    const padding = options2?.padding ?? 36;
+    const includeExternal = options2?.includeExternalSources ?? true;
+    if (assets.length === 0) {
+      return { nodes: [], edges: [], width: 0, height: 0, layerCount: 0 };
+    }
+    const assetByKey = /* @__PURE__ */ new Map();
+    for (const a4 of assets) {
+      assetByKey.set(a4.keyString, a4);
+    }
+    const allKeys = new Set(assetByKey.keys());
+    const externalKeys = /* @__PURE__ */ new Set();
+    const parents = /* @__PURE__ */ new Map();
+    const children = /* @__PURE__ */ new Map();
+    const ensureKey = (k3) => {
+      if (!parents.has(k3)) parents.set(k3, /* @__PURE__ */ new Set());
+      if (!children.has(k3)) children.set(k3, /* @__PURE__ */ new Set());
+    };
+    for (const key of allKeys) {
+      ensureKey(key);
+    }
+    for (const a4 of assets) {
+      for (const dep of a4.dependencyKeys ?? []) {
+        if (dep === a4.keyString) continue;
+        if (!assetByKey.has(dep)) {
+          if (!includeExternal) continue;
+          allKeys.add(dep);
+          externalKeys.add(dep);
+          ensureKey(dep);
+        }
+        parents.get(a4.keyString).add(dep);
+        children.get(dep).add(a4.keyString);
+      }
+      for (const child of a4.dependedByKeys ?? []) {
+        if (child === a4.keyString) continue;
+        if (!assetByKey.has(child)) continue;
+        parents.get(child).add(a4.keyString);
+        children.get(a4.keyString).add(child);
+      }
+    }
+    const inDegree = /* @__PURE__ */ new Map();
+    for (const k3 of allKeys) {
+      inDegree.set(k3, parents.get(k3).size);
+    }
+    const queue = [];
+    for (const [k3, deg] of inDegree.entries()) {
+      if (deg === 0) queue.push(k3);
+    }
+    queue.sort((a4, b) => a4.localeCompare(b));
+    const layerByKey = /* @__PURE__ */ new Map();
+    const visited = /* @__PURE__ */ new Set();
+    for (let head = 0; head < queue.length; head++) {
+      const k3 = queue[head];
+      visited.add(k3);
+      let layer = 0;
+      for (const p3 of parents.get(k3)) {
+        const pLayer = layerByKey.get(p3) ?? 0;
+        if (pLayer + 1 > layer) layer = pLayer + 1;
+      }
+      layerByKey.set(k3, layer);
+      const nextChildren = [...children.get(k3)].sort((a4, b) => a4.localeCompare(b));
+      for (const c3 of nextChildren) {
+        const nextDeg = (inDegree.get(c3) ?? 1) - 1;
+        inDegree.set(c3, nextDeg);
+        if (nextDeg === 0) {
+          queue.push(c3);
+        }
+      }
+    }
+    for (const k3 of allKeys) {
+      if (!visited.has(k3)) {
+        let maxParent = -1;
+        for (const p3 of parents.get(k3)) {
+          const l3 = layerByKey.get(p3);
+          if (l3 !== void 0 && l3 > maxParent) maxParent = l3;
+        }
+        layerByKey.set(k3, maxParent + 1);
+      }
+    }
+    const layersMap = /* @__PURE__ */ new Map();
+    let maxLayer = 0;
+    for (const [k3, l3] of layerByKey.entries()) {
+      if (l3 > maxLayer) maxLayer = l3;
+      const list = layersMap.get(l3) ?? [];
+      list.push(k3);
+      layersMap.set(l3, list);
+    }
+    const layers = [];
+    for (let l3 = 0; l3 <= maxLayer; l3 += 1) {
+      const row = layersMap.get(l3) ?? [];
+      row.sort((a4, b) => {
+        const extA = externalKeys.has(a4) ? 0 : 1;
+        const extB = externalKeys.has(b) ? 0 : 1;
+        if (extA !== extB) return extA - extB;
+        const grpA = assetByKey.get(a4)?.groupName ?? "";
+        const grpB = assetByKey.get(b)?.groupName ?? "";
+        if (grpA !== grpB) return grpA.localeCompare(grpB);
+        return a4.localeCompare(b);
+      });
+      layers.push(row);
+    }
+    const posIndex = /* @__PURE__ */ new Map();
+    const indexRow = (row) => row.forEach((k3, idx) => posIndex.set(k3, idx));
+    layers.forEach(indexRow);
+    function reorder(row, neighbors) {
+      if (row.length < 2) return;
+      const weights = new Map(
+        row.map((k3) => [k3, averageNeighborPos(neighbors.get(k3), posIndex, posIndex.get(k3))])
+      );
+      row.sort((a4, b) => weights.get(a4) - weights.get(b) || a4.localeCompare(b));
+      indexRow(row);
+    }
+    for (let iter = 0; iter < 2; iter++) {
+      for (let l3 = 1; l3 < layers.length; l3++) reorder(layers[l3], parents);
+      for (let l3 = layers.length - 2; l3 >= 0; l3--) reorder(layers[l3], children);
+    }
+    const maxRowCols = layers.reduce((acc, row) => Math.max(acc, row.length), 1);
+    const contentWidth = maxRowCols * nodeWidth + Math.max(0, maxRowCols - 1) * horizontalGap;
+    const totalWidth = contentWidth + padding * 2;
+    const totalHeight = layers.length * nodeHeight + Math.max(0, layers.length - 1) * verticalGap + padding * 2;
+    const nodes = [];
+    const nodeByKey = /* @__PURE__ */ new Map();
+    layers.forEach((row, layerIdx) => {
+      const rowWidth = row.length * nodeWidth + Math.max(0, row.length - 1) * horizontalGap;
+      const startX = padding + (contentWidth - rowWidth) / 2;
+      const y3 = padding + layerIdx * (nodeHeight + verticalGap);
+      row.forEach((key, order) => {
+        const x2 = startX + order * (nodeWidth + horizontalGap);
+        const asset = assetByKey.get(key);
+        const node = {
+          key,
+          label: asset?.assetKey.join("/") ?? externalLabel(key),
+          external: externalKeys.has(key),
+          asset,
+          layer: layerIdx,
+          order,
+          x: x2,
+          y: y3,
+          width: nodeWidth,
+          height: nodeHeight
+        };
+        nodes.push(node);
+        nodeByKey.set(key, node);
+      });
+    });
+    const edges = [];
+    for (const node of nodes) {
+      const kids = [...children.get(node.key) ?? []].sort((a4, b) => a4.localeCompare(b));
+      for (const targetKey of kids) {
+        const target = nodeByKey.get(targetKey);
+        if (!target) continue;
+        const x1 = node.x + node.width / 2;
+        const y1 = node.y + node.height;
+        const x2 = target.x + target.width / 2;
+        const y22 = target.y;
+        const dy = Math.max(24, Math.abs(y22 - y1) * 0.48);
+        const path = `M ${x1} ${y1} C ${x1} ${y1 + dy}, ${x2} ${y22 - dy}, ${x2} ${y22}`;
+        edges.push({
+          id: `${node.key}->${targetKey}`,
+          from: node.key,
+          to: targetKey,
+          external: node.external,
+          path
+        });
+      }
+    }
+    return {
+      nodes,
+      edges,
+      width: totalWidth,
+      height: totalHeight,
+      layerCount: layers.length
+    };
+  }
+  function externalLabel(key) {
+    try {
+      const path = JSON.parse(key);
+      if (Array.isArray(path) && path.every((part) => typeof part === "string")) return path.join("/");
+    } catch {
+    }
+    return key;
+  }
+  function averageNeighborPos(neighbors, posIndex, fallback) {
+    if (neighbors.size === 0) return fallback;
+    let sum = 0;
+    let count = 0;
+    for (const nb of neighbors) {
+      const pos = posIndex.get(nb);
+      if (pos !== void 0) {
+        sum += pos;
+        count += 1;
+      }
+    }
+    return count > 0 ? sum / count : fallback;
+  }
+
+  // src/dagster/selection.ts
+  var SELECTION_SYNTAX_HINT_RE = /[+*(),:]|\b(?:and|or|not|roots|sinks)\b/i;
+  function looksLikeSelectionSyntax(raw) {
+    const trimmed = raw.trim();
+    if (!trimmed) return false;
+    return SELECTION_SYNTAX_HINT_RE.test(trimmed);
+  }
+  function tokenize(input) {
+    const tokens = [];
+    let i3 = 0;
+    const len = input.length;
+    while (i3 < len) {
+      const ch = input[i3];
+      if (/\s/.test(ch)) {
+        i3 += 1;
+        continue;
+      }
+      if (ch === "(") {
+        tokens.push({ kind: "LPAREN", value: "(", pos: i3 });
+        i3 += 1;
+        continue;
+      }
+      if (ch === ")") {
+        tokens.push({ kind: "RPAREN", value: ")", pos: i3 });
+        i3 += 1;
+        continue;
+      }
+      if (ch === ",") {
+        tokens.push({ kind: "COMMA", value: ",", pos: i3 });
+        i3 += 1;
+        continue;
+      }
+      if (ch === "+") {
+        tokens.push({ kind: "PLUS", value: "+", pos: i3 });
+        i3 += 1;
+        continue;
+      }
+      if (ch === "*") {
+        tokens.push({ kind: "STAR", value: "*", pos: i3 });
+        i3 += 1;
+        continue;
+      }
+      if (ch === ":") {
+        tokens.push({ kind: "COLON", value: ":", pos: i3 });
+        i3 += 1;
+        continue;
+      }
+      if (ch === '"' || ch === "'") {
+        const quote = ch;
+        const start2 = i3;
+        i3 += 1;
+        let buf = "";
+        while (i3 < len && input[i3] !== quote) {
+          if (input[i3] === "\\" && i3 + 1 < len) {
+            buf += input[i3 + 1];
+            i3 += 2;
+          } else {
+            buf += input[i3];
+            i3 += 1;
+          }
+        }
+        if (i3 >= len) {
+          throw new Error(`Unterminated quoted string at position ${start2 + 1}`);
+        }
+        i3 += 1;
+        tokens.push({ kind: "STRING", value: buf, pos: start2 });
+        continue;
+      }
+      const start = i3;
+      while (i3 < len && !/[\s(),+*:"']/.test(input[i3])) {
+        i3 += 1;
+      }
+      const word = input.slice(start, i3);
+      const lower = word.toLowerCase();
+      let look = i3;
+      while (look < len && /\s/.test(input[look])) look += 1;
+      if ((lower === "roots" || lower === "sinks") && input[look] === "(") {
+        tokens.push({ kind: "FUNC", value: lower, pos: start });
+        continue;
+      }
+      if (lower === "and") {
+        tokens.push({ kind: "AND", value: word, pos: start });
+      } else if (lower === "or") {
+        tokens.push({ kind: "OR", value: word, pos: start });
+      } else if (lower === "not") {
+        tokens.push({ kind: "NOT", value: word, pos: start });
+      } else {
+        tokens.push({ kind: "WORD", value: word, pos: start });
+      }
+    }
+    tokens.push({ kind: "EOF", value: "", pos: len });
+    return tokens;
+  }
+  function glob(pattern) {
+    const parts = pattern.toLowerCase().split(/\*+/);
+    const first = parts[0], last = parts.at(-1);
+    return (raw) => {
+      const text = raw.toLowerCase();
+      if (parts.length === 1) return text === first;
+      if (!text.startsWith(first) || !text.endsWith(last)) return false;
+      let pos = first.length;
+      const end = text.length - last.length;
+      for (let i3 = 1; i3 < parts.length - 1; i3++) {
+        pos = text.indexOf(parts[i3], pos);
+        if (pos < 0) return false;
+        pos += parts[i3].length;
+        if (pos > end) return false;
+      }
+      return pos <= end;
+    };
+  }
+  function buildGraphContext(assets, overlay) {
+    const allKeys = /* @__PURE__ */ new Set();
+    const upstream = /* @__PURE__ */ new Map();
+    const downstream = /* @__PURE__ */ new Map();
+    for (const a4 of assets) {
+      allKeys.add(a4.keyString);
+      upstream.set(a4.keyString, /* @__PURE__ */ new Set());
+      downstream.set(a4.keyString, /* @__PURE__ */ new Set());
+    }
+    for (const a4 of assets) {
+      for (const dep of a4.dependencyKeys ?? []) {
+        if (allKeys.has(dep)) {
+          upstream.get(a4.keyString).add(dep);
+          downstream.get(dep).add(a4.keyString);
+        }
+      }
+      for (const child of a4.dependedByKeys ?? []) {
+        if (allKeys.has(child)) {
+          downstream.get(a4.keyString).add(child);
+          upstream.get(child).add(a4.keyString);
+        }
+      }
+    }
+    return { ...overlay, assets, allKeys, upstream, downstream };
+  }
+  function expandNeighbors(seed, adjacency, maxDepth) {
+    const result2 = new Set(seed);
+    if (maxDepth === 0) return result2;
+    let frontier = new Set(seed);
+    let depth = 0;
+    while (frontier.size > 0 && depth < maxDepth) {
+      const next = /* @__PURE__ */ new Set();
+      for (const key of frontier) {
+        const neighbors = adjacency.get(key);
+        if (!neighbors) continue;
+        for (const nb of neighbors) {
+          if (!result2.has(nb)) {
+            result2.add(nb);
+            next.add(nb);
+          }
+        }
+      }
+      frontier = next;
+      depth += 1;
+    }
+    return result2;
+  }
+  function setUnion(a4, b) {
+    const out = new Set(a4);
+    for (const v3 of b) out.add(v3);
+    return out;
+  }
+  function setIntersect(a4, b) {
+    const out = /* @__PURE__ */ new Set();
+    for (const v3 of a4) {
+      if (b.has(v3)) out.add(v3);
+    }
+    return out;
+  }
+  function setComplement(a4, universe) {
+    const out = /* @__PURE__ */ new Set();
+    for (const v3 of universe) {
+      if (!a4.has(v3)) out.add(v3);
+    }
+    return out;
+  }
+  function matchKeyPattern(pattern, ctx2) {
+    const out = /* @__PURE__ */ new Set();
+    const trimmed = pattern.trim();
+    if (!trimmed || trimmed === "*") {
+      return new Set(ctx2.allKeys);
+    }
+    const matches = glob(trimmed);
+    for (const asset of ctx2.assets) {
+      if (matches(asset.assetKey.join("/")) || matches(asset.assetKey.at(-1) ?? ""))
+        out.add(asset.keyString);
+    }
+    return out;
+  }
+  function matchAttribute(attr, rawVal, ctx2) {
+    const key = attr.toLowerCase();
+    const val = rawVal.trim();
+    const matches = glob(val);
+    const out = /* @__PURE__ */ new Set();
+    switch (key) {
+      case "key":
+      case "key_substring": {
+        if (key === "key_substring") {
+          const sub = val.toLowerCase();
+          for (const a4 of ctx2.assets) {
+            if (a4.assetKey.join("/").toLowerCase().includes(sub)) out.add(a4.keyString);
+          }
+          return out;
+        }
+        return matchKeyPattern(val, ctx2);
+      }
+      case "group": {
+        for (const a4 of ctx2.assets) {
+          if (matches(a4.groupName)) out.add(a4.keyString);
+        }
+        return out;
+      }
+      case "kind": {
+        for (const a4 of ctx2.assets) {
+          const kinds = a4.kinds ?? [];
+          if (kinds.some((k3) => matches(k3))) out.add(a4.keyString);
+        }
+        return out;
+      }
+      case "tag": {
+        const eq = val.indexOf("=");
+        if (eq >= 0) {
+          const tKey = val.slice(0, eq).trim();
+          const tVal = val.slice(eq + 1).trim();
+          const keyMatches = glob(tKey);
+          const valueMatches = glob(tVal);
+          for (const a4 of ctx2.assets) {
+            const entries = Object.entries(a4.tags ?? {});
+            if (entries.some(([k3, v3]) => keyMatches(k3) && valueMatches(v3))) {
+              out.add(a4.keyString);
+            }
+          }
+        } else {
+          for (const a4 of ctx2.assets) {
+            const keys = Object.keys(a4.tags ?? {});
+            if (keys.some((k3) => matches(k3))) out.add(a4.keyString);
+          }
+        }
+        return out;
+      }
+      case "owner": {
+        for (const a4 of ctx2.assets) {
+          const owners = a4.owners ?? [];
+          if (owners.some((o4) => matches(o4) || matches(o4.replace(/^team:/i, "")))) {
+            out.add(a4.keyString);
+          }
+        }
+        return out;
+      }
+      case "code_location":
+      case "location": {
+        for (const a4 of ctx2.assets) {
+          if (matches(a4.locationName)) out.add(a4.keyString);
+        }
+        return out;
+      }
+      case "checks":
+        return val.toLowerCase() === "failed" ? new Set(ctx2.failedChecks) : out;
+      case "status": {
+        const target = val.toLowerCase();
+        for (const a4 of ctx2.assets) {
+          if (target === "stale" && a4.staleStatus === "STALE") out.add(a4.keyString);
+          if ((target === "failed" || target === "failure" || target === "danger") && a4.status === "danger") {
+            out.add(a4.keyString);
+          } else if ((target === "materialized" || target === "ok" || target === "success") && a4.status === "success") {
+            out.add(a4.keyString);
+          } else if ((target === "running" || target === "materializing") && (a4.running ?? (a4.status === "warning" && a4.staleStatus !== "STALE")) || target === "warning" && a4.status === "warning") {
+            out.add(a4.keyString);
+          } else if ((target === "missing" || target === "unmaterialized" || target === "neutral") && a4.status === "neutral") {
+            out.add(a4.keyString);
+          }
+        }
+        return out;
+      }
+      case "partitioned": {
+        const want = val.toLowerCase() !== "false" && val !== "0" && val.toLowerCase() !== "no";
+        for (const a4 of ctx2.assets) {
+          if (a4.isPartitioned === want) out.add(a4.keyString);
+        }
+        return out;
+      }
+      default:
+        throw new Error(
+          `Unknown selector "${attr}:". Supported: key, group, kind, tag, owner, code_location, status, partitioned.`
+        );
+    }
+  }
+  var SelectionParser = class {
+    tokens;
+    ctx;
+    idx = 0;
+    constructor(tokens, ctx2) {
+      this.tokens = tokens;
+      this.ctx = ctx2;
+    }
+    peek(offset = 0) {
+      return this.tokens[Math.min(this.idx + offset, this.tokens.length - 1)];
+    }
+    consume() {
+      const tok = this.peek();
+      if (tok.kind !== "EOF") this.idx += 1;
+      return tok;
+    }
+    canStartFactor(tok) {
+      return tok.kind === "NOT" || tok.kind === "LPAREN" || tok.kind === "FUNC" || tok.kind === "PLUS" || tok.kind === "STAR" || tok.kind === "WORD" || tok.kind === "STRING";
+    }
+    parse() {
+      if (this.peek().kind === "EOF") {
+        return new Set(this.ctx.allKeys);
+      }
+      const res = this.parseOr();
+      if (this.peek().kind !== "EOF") {
+        throw new Error(`Unexpected token "${this.peek().value}" at position ${this.peek().pos + 1}`);
+      }
+      return res;
+    }
+    parseOr() {
+      let left = this.parseAnd();
+      while (true) {
+        const tok = this.peek();
+        if (tok.kind === "OR" || tok.kind === "COMMA") {
+          this.consume();
+          if (this.peek().kind === "EOF" || this.peek().kind === "RPAREN") {
+            break;
+          }
+          const right = this.parseAnd();
+          left = setUnion(left, right);
+        } else if (this.canStartFactor(tok)) {
+          const right = this.parseAnd();
+          left = setUnion(left, right);
+        } else {
+          break;
+        }
+      }
+      return left;
+    }
+    parseAnd() {
+      let left = this.parseNot();
+      while (this.peek().kind === "AND") {
+        this.consume();
+        const right = this.parseNot();
+        left = setIntersect(left, right);
+      }
+      return left;
+    }
+    parseNot() {
+      if (this.peek().kind === "NOT") {
+        this.consume();
+        const inner = this.parseNot();
+        return setComplement(inner, this.ctx.allKeys);
+      }
+      return this.parseTraversal();
+    }
+    parseTraversal() {
+      let upDepth = 0;
+      if (this.peek().kind === "WORD" && /^\d+$/.test(this.peek().value) && this.peek(1).kind === "PLUS" && this.peek(1).pos === this.peek().pos + this.peek().value.length) {
+        upDepth = Number(this.consume().value);
+        this.consume();
+      } else if (this.peek().kind === "PLUS") {
+        while (this.peek().kind === "PLUS") {
+          this.consume();
+          upDepth += 1;
+        }
+      } else if (this.peek().kind === "STAR") {
+        const starTok = this.peek();
+        const nextTok = this.peek(1);
+        if (nextTok.kind === "EOF" || nextTok.kind === "RPAREN" || nextTok.kind === "COMMA" || nextTok.kind === "OR" || nextTok.kind === "AND") {
+          this.consume();
+          return new Set(this.ctx.allKeys);
+        }
+        if (nextTok.pos === starTok.pos + 1 && (nextTok.kind === "WORD" || nextTok.kind === "STRING" || nextTok.kind === "LPAREN" || nextTok.kind === "FUNC")) {
+          this.consume();
+          upDepth = Number.POSITIVE_INFINITY;
+        } else {
+          this.consume();
+          upDepth = Number.POSITIVE_INFINITY;
+        }
+      }
+      const base = this.parsePrimary();
+      let downDepth = 0;
+      if (this.peek().kind === "PLUS") {
+        while (this.peek().kind === "PLUS") {
+          this.consume();
+          downDepth += 1;
+        }
+        if (downDepth === 1 && this.peek().kind === "WORD" && /^\d+$/.test(this.peek().value)) {
+          downDepth = Number(this.consume().value);
+        }
+      } else if (this.peek().kind === "STAR") {
+        const prev = this.tokens[this.idx - 1];
+        const cur = this.peek();
+        const prevEnd = prev ? prev.pos + prev.value.length + (prev.kind === "STRING" ? 2 : 0) : -1;
+        if (cur.pos === prevEnd) {
+          this.consume();
+          downDepth = Number.POSITIVE_INFINITY;
+        }
+      }
+      let result2 = base;
+      if (upDepth > 0) {
+        result2 = setUnion(result2, expandNeighbors(base, this.ctx.upstream, upDepth));
+      }
+      if (downDepth > 0) {
+        result2 = setUnion(result2, expandNeighbors(base, this.ctx.downstream, downDepth));
+      }
+      return result2;
+    }
+    readPatternValue() {
+      const tok = this.peek();
+      if (tok.kind === "STRING") {
+        this.consume();
+        return tok.value;
+      }
+      if (tok.kind !== "WORD" && tok.kind !== "STAR") {
+        throw new Error(`Expected selector value at position ${tok.pos + 1}`);
+      }
+      let value = "";
+      let lastEnd = -1;
+      while (true) {
+        const cur = this.peek();
+        if (cur.kind !== "WORD" && cur.kind !== "STAR" && cur.kind !== "COLON") {
+          break;
+        }
+        if (lastEnd !== -1 && cur.pos !== lastEnd) {
+          break;
+        }
+        this.consume();
+        value += cur.value;
+        lastEnd = cur.pos + cur.value.length;
+      }
+      return value;
+    }
+    parsePrimary() {
+      const tok = this.peek();
+      if (tok.kind === "LPAREN") {
+        this.consume();
+        const inner = this.parseOr();
+        if (this.peek().kind !== "RPAREN") {
+          throw new Error(`Expected ")" at position ${this.peek().pos + 1}`);
+        }
+        this.consume();
+        return inner;
+      }
+      if (tok.kind === "FUNC") {
+        const fn = this.consume().value;
+        if (this.peek().kind !== "LPAREN") {
+          throw new Error(`Expected "(" after ${fn} at position ${this.peek().pos + 1}`);
+        }
+        this.consume();
+        const inner = this.parseOr();
+        if (this.peek().kind !== "RPAREN") {
+          throw new Error(`Expected ")" to close ${fn}(...) at position ${this.peek().pos + 1}`);
+        }
+        this.consume();
+        const out = /* @__PURE__ */ new Set();
+        if (fn === "roots") {
+          for (const key of inner) {
+            const ups = this.ctx.upstream.get(key);
+            const hasUpstreamInSet = ups ? [...ups].some((u3) => inner.has(u3)) : false;
+            if (!hasUpstreamInSet) out.add(key);
+          }
+        } else if (fn === "sinks") {
+          for (const key of inner) {
+            const downs = this.ctx.downstream.get(key);
+            const hasDownstreamInSet = downs ? [...downs].some((d3) => inner.has(d3)) : false;
+            if (!hasDownstreamInSet) out.add(key);
+          }
+        }
+        return out;
+      }
+      if (tok.kind === "STRING") {
+        this.consume();
+        return matchKeyPattern(tok.value, this.ctx);
+      }
+      if (tok.kind === "WORD") {
+        if (this.peek(1).kind === "COLON" && this.peek(1).pos === tok.pos + tok.value.length) {
+          const attr = this.consume().value;
+          this.consume();
+          const val = this.readPatternValue();
+          return matchAttribute(attr, val, this.ctx);
+        }
+        const word = this.consume().value;
+        if (word.toLowerCase() === "changed" && this.ctx.changed) return new Set(this.ctx.changed);
+        let pattern = word;
+        let lastEnd = tok.pos + word.length;
+        while (this.peek().kind === "STAR" && this.peek().pos === lastEnd && this.peek(1).kind === "WORD" && this.peek(1).pos === this.peek().pos + 1) {
+          const star = this.consume();
+          const nextWord = this.consume();
+          pattern += star.value + nextWord.value;
+          lastEnd = nextWord.pos + nextWord.value.length;
+        }
+        if (this.peek().kind === "STAR" && this.peek().pos === lastEnd && matchKeyPattern(pattern, this.ctx).size === 0) {
+          const star = this.consume();
+          pattern += star.value;
+        }
+        return matchKeyPattern(pattern, this.ctx);
+      }
+      throw new Error(`Unexpected token "${tok.value || "end of input"}" at position ${tok.pos + 1}`);
+    }
+  };
+  function evaluateAssetSelection(rawQuery, assets, overlay = {}) {
+    const trimmed = rawQuery.trim();
+    if (!trimmed) {
+      return {
+        matchedKeys: new Set(assets.map((a4) => a4.keyString)),
+        matchedAssets: [...assets],
+        isSelectionSyntax: false
+      };
+    }
+    const syntaxMode = looksLikeSelectionSyntax(trimmed) || Boolean(overlay.changed) && trimmed.toLowerCase() === "changed";
+    const ctx2 = buildGraphContext(assets, overlay);
+    try {
+      const tokens = tokenize(trimmed);
+      const parser = new SelectionParser(tokens, ctx2);
+      const matchedKeys = parser.parse();
+      if (!syntaxMode && matchedKeys.size === 0) {
+        const q2 = trimmed.toLowerCase();
+        const subMatched = assets.filter(
+          (a4) => a4.assetKey.join("/").toLowerCase().includes(q2) || a4.groupName.toLowerCase().includes(q2) || (a4.description ?? "").toLowerCase().includes(q2) || (a4.kinds ?? []).some((k3) => k3.toLowerCase().includes(q2))
+        );
+        return {
+          matchedKeys: new Set(subMatched.map((a4) => a4.keyString)),
+          matchedAssets: subMatched,
+          isSelectionSyntax: false
+        };
+      }
+      return {
+        matchedKeys,
+        matchedAssets: assets.filter((a4) => matchedKeys.has(a4.keyString)),
+        isSelectionSyntax: syntaxMode || matchedKeys.size > 0
+      };
+    } catch (err) {
+      return {
+        matchedKeys: /* @__PURE__ */ new Set(),
+        matchedAssets: [],
+        error: err instanceof Error ? err.message : String(err),
+        isSelectionSyntax: true
+      };
+    }
+  }
+
+  // src/frame/graph.tsx
+  function GraphSurface({
+    layout,
+    selected,
+    highlighted,
+    badges,
+    checks,
+    assets,
+    select,
+    edgeHighlights
+  }) {
+    const [scale, zoom] = d2(1);
+    const drag = T2(null);
+    const viewport = T2(null);
+    const center = T2(null);
+    const focused = layout.nodes.find((n2) => n2.key === selected);
+    function moveTo(x2, y3, at) {
+      const el = viewport.current;
+      if (!el) return;
+      el.scrollLeft = x2 * at - el.clientWidth / 2;
+      el.scrollTop = y3 * at - el.clientHeight / 2;
+    }
+    function resize(to, target) {
+      const el = viewport.current;
+      if (!el) return;
+      const point = target ?? {
+        x: (el.scrollLeft + el.clientWidth / 2) / scale,
+        y: (el.scrollTop + el.clientHeight / 2) / scale
+      };
+      if (scale === to) moveTo(point.x, point.y, to);
+      else {
+        center.current = point;
+        zoom(to);
+      }
+    }
+    F2(() => {
+      if (viewport.current) {
+        const midpoint = (layout.width - viewport.current.clientWidth / scale) / 2;
+        const roots = layout.nodes.filter((n2) => n2.layer === 0);
+        const anchor = roots.reduce(
+          (closest, n2) => Math.abs(n2.x - midpoint) < Math.abs(closest.x - midpoint) ? n2 : closest,
+          roots[0]
+        );
+        viewport.current.scrollLeft = anchor && midpoint > 0 ? (anchor.x - 12) * scale : 0;
+        viewport.current.scrollTop = 0;
+      }
+    }, [layout]);
+    F2(() => {
+      if (center.current) moveTo(center.current.x, center.current.y, scale);
+      center.current = null;
+    }, [scale]);
+    return /* @__PURE__ */ a3("div", { class: "graph-stage", children: [
+      /* @__PURE__ */ a3(
+        "div",
+        {
+          class: "canvas",
+          ref: viewport,
+          onPointerDown: (e3) => {
+            if (e3.target.closest('[role="button"]')) return;
+            const el = e3.currentTarget;
+            drag.current = { x: e3.clientX, y: e3.clientY, left: el.scrollLeft, top: el.scrollTop };
+            el.setPointerCapture(e3.pointerId);
+          },
+          onPointerMove: (e3) => {
+            if (drag.current) {
+              e3.currentTarget.scrollLeft = drag.current.left + drag.current.x - e3.clientX;
+              e3.currentTarget.scrollTop = drag.current.top + drag.current.y - e3.clientY;
+            }
+          },
+          onPointerUp: () => {
+            drag.current = null;
+          },
+          onPointerCancel: () => {
+            drag.current = null;
+          },
+          children: [
+            !layout.nodes.length && /* @__PURE__ */ a3("p", { class: "canvas-empty", children: "No assets in this graph." }),
+            /* @__PURE__ */ a3(
+              "svg",
+              {
+                "aria-label": "Asset dependency graph",
+                width: layout.width * scale,
+                height: layout.height * scale,
+                viewBox: `0 0 ${layout.width} ${layout.height}`,
+                children: [
+                  layout.edges.map((e3) => /* @__PURE__ */ a3(
+                    "path",
+                    {
+                      d: e3.path,
+                      class: (edgeHighlights ? edgeHighlights.has(JSON.stringify([e3.from, e3.to])) : highlighted.has(e3.from) && highlighted.has(e3.to)) ? highlighted.size < assets.size || edgeHighlights ? "edge active" : "edge" : "edge dim"
+                    },
+                    e3.id
+                  )),
+                  layout.nodes.map((n2) => {
+                    const asset = assets.get(n2.key), check = checks.get(n2.key);
+                    const count = check?.checkCount ?? 0;
+                    const meta = [asset?.groupName, ...asset?.kinds ?? []].filter(Boolean).join(" \xB7 ") || "External source";
+                    const status = asset?.status ?? "neutral";
+                    const badge = badges[n2.key];
+                    return /* @__PURE__ */ a3(
+                      "g",
+                      {
+                        transform: `translate(${n2.x} ${n2.y})`,
+                        class: [
+                          "node",
+                          selected === n2.key ? "selected" : "",
+                          highlighted.has(n2.key) || n2.external && highlighted.size === assets.size ? "" : "dim",
+                          /IN_PROGRESS|STARTED/.test(badges[n2.key] ?? "") ? "running" : ""
+                        ].join(" "),
+                        role: n2.asset ? "button" : void 0,
+                        tabIndex: n2.asset ? 0 : void 0,
+                        "aria-label": n2.label,
+                        onClick: () => n2.asset && select(n2.key),
+                        onKeyDown: (e3) => {
+                          if (n2.asset && ["Enter", " "].includes(e3.key)) {
+                            e3.preventDefault();
+                            select(n2.key);
+                          }
+                        },
+                        children: [
+                          /* @__PURE__ */ a3("title", { children: [n2.label, meta, status, count ? count + " checks" : "", badge].filter(Boolean).join(" \xB7 ") }),
+                          /* @__PURE__ */ a3("rect", { class: "node-card", width: n2.width, height: n2.height, rx: "7" }),
+                          /* @__PURE__ */ a3("circle", { class: "status-dot " + status, cx: "14", cy: "20", r: "3.5" }),
+                          /* @__PURE__ */ a3("text", { class: "node-name", x: "24", y: "24", children: n2.label.length > 23 ? n2.label.slice(0, 22) + "\u2026" : n2.label }),
+                          /* @__PURE__ */ a3("text", { class: "subtitle", x: "11", y: badge ? "41" : "47", children: meta.length > 27 ? meta.slice(0, 26) + "\u2026" : meta }),
+                          badge && /* @__PURE__ */ a3("text", { class: "node-note", x: "11", y: "55", children: badge.slice(0, 30) }),
+                          count > 0 && /* @__PURE__ */ a3(
+                            "g",
+                            {
+                              class: "check-badge" + (check?.failed?.length ? " failed" : ""),
+                              transform: `translate(${n2.width - 39} 34)`,
+                              children: [
+                                /* @__PURE__ */ a3("title", { children: count + " checks \xB7 " + (check?.failed?.length ?? 0) + " failed" }),
+                                /* @__PURE__ */ a3("rect", { width: "30", height: "18", rx: "8" }),
+                                /* @__PURE__ */ a3("text", { x: "15", y: "12", "text-anchor": "middle", children: (check?.failed?.length ? "\xD7" : "\u2713") + count })
+                              ]
+                            }
+                          )
+                        ]
+                      },
+                      n2.key
+                    );
+                  })
+                ]
+              }
+            )
+          ]
+        }
+      ),
+      /* @__PURE__ */ a3("div", { class: "canvas-footer", children: [
+        /* @__PURE__ */ a3("span", { class: "canvas-hint", children: "Drag to pan" }),
+        /* @__PURE__ */ a3("div", { class: "zoom", role: "toolbar", "aria-label": "Graph viewport", children: [
+          /* @__PURE__ */ a3(
+            "button",
+            {
+              "aria-label": "Zoom out",
+              disabled: scale <= 0.05,
+              onClick: () => resize(Math.max(0.05, scale / 1.25)),
+              children: "\u2212"
+            }
+          ),
+          /* @__PURE__ */ a3(
+            "button",
+            {
+              class: "zoom-level",
+              "aria-label": "Reset zoom to 100%",
+              title: "Reset zoom to 100%",
+              onClick: () => resize(1),
+              children: [
+                Math.round(scale * 100),
+                "%"
+              ]
+            }
+          ),
+          /* @__PURE__ */ a3(
+            "button",
+            {
+              "aria-label": "Zoom in",
+              disabled: scale >= 3,
+              onClick: () => resize(Math.min(3, scale * 1.25)),
+              children: "+"
+            }
+          ),
+          /* @__PURE__ */ a3(
+            "button",
+            {
+              disabled: !layout.width,
+              onClick: () => {
+                const el = viewport.current;
+                resize(
+                  Math.min(
+                    1.5,
+                    (el.clientWidth - 12) / layout.width,
+                    (el.clientHeight - 48) / layout.height
+                  ),
+                  { x: layout.width / 2, y: layout.height / 2 }
+                );
+              },
+              children: "Fit"
+            }
+          ),
+          /* @__PURE__ */ a3(
+            "button",
+            {
+              disabled: !focused,
+              title: "Center the selected asset",
+              onClick: () => {
+                if (focused)
+                  resize(1, { x: focused.x + focused.width / 2, y: focused.y + focused.height / 2 });
+              },
+              children: "Focus"
+            }
+          )
+        ] })
+      ] })
+    ] });
+  }
+  function PartitionGrid({ page: page2, select }) {
+    const daily = page2.calendar && page2.rows.every((r3) => /^\d{4}-\d{2}-\d{2}$/.test(r3.label ?? r3.key));
+    if (!daily)
+      return /* @__PURE__ */ a3("div", { class: "partition-grid", children: page2.rows.map((r3) => /* @__PURE__ */ a3("button", { class: r3.status, onClick: () => select(r3.key, r3.status), children: [
+        r3.label ?? r3.key,
+        /* @__PURE__ */ a3("small", { children: r3.status })
+      ] }, r3.key)) });
+    const months = /* @__PURE__ */ new Map();
+    for (const r3 of page2.rows) {
+      const month = (r3.label ?? r3.key).slice(0, 7);
+      const rows = months.get(month) ?? [];
+      rows.push(r3);
+      months.set(month, rows);
+    }
+    return /* @__PURE__ */ a3("div", { children: [...months].map(([month, rows]) => /* @__PURE__ */ a3("section", { children: [
+      /* @__PURE__ */ a3("h3", { children: month }),
+      /* @__PURE__ */ a3("div", { class: "calendar", children: [
+        ["S", "M", "T", "W", "T", "F", "S"].map((d3, i3) => /* @__PURE__ */ a3("small", { children: d3 }, i3)),
+        rows.map((r3, i3) => {
+          const date = r3.label ?? r3.key;
+          return /* @__PURE__ */ a3(
+            "button",
+            {
+              style: i3 === 0 ? { gridColumnStart: (/* @__PURE__ */ new Date(date + "T00:00:00Z")).getUTCDay() + 1 } : void 0,
+              class: r3.status,
+              "aria-label": r3.key + " \xB7 " + r3.status,
+              title: r3.status,
+              onClick: () => select(r3.key, r3.status),
+              children: [
+                Number(date.slice(-2)),
+                /* @__PURE__ */ a3("small", { children: r3.status })
+              ]
+            },
+            r3.key
+          );
+        })
+      ] })
+    ] }, month)) });
+  }
+  function Waterfall({ run, now }) {
+    const starts = run.steps.flatMap((s3) => s3.startTime ? [s3.startTime] : []);
+    const start = run.startTime ?? (starts.length ? Math.min(...starts) : now), duration = Math.max(1, (run.endTime ?? now) - start);
+    return /* @__PURE__ */ a3("div", { class: "stack", children: run.steps.map((step) => /* @__PURE__ */ a3("div", { children: [
+      /* @__PURE__ */ a3("strong", { children: step.key }),
+      /* @__PURE__ */ a3("small", { children: [
+        step.status,
+        step.startTime ? " \xB7 " + (Math.max(0, (step.endTime ?? now) - step.startTime) / 1e3).toFixed(1) + "s" : "",
+        step.attempts && step.attempts.length > 1 ? " \xB7 " + step.attempts.length + " attempts" : ""
+      ] }),
+      /* @__PURE__ */ a3("div", { class: "track", children: (step.attempts?.length ? step.attempts : [step]).map((attempt, i3) => {
+        if (!attempt.startTime) return null;
+        const left = Math.min(
+          100,
+          Math.max(0, 100 * (attempt.startTime - start) / duration)
+        );
+        const width = Math.min(
+          100 - left,
+          Math.max(0.5, 100 * ((attempt.endTime ?? now) - attempt.startTime) / duration)
+        );
+        return /* @__PURE__ */ a3(
+          "span",
+          {
+            title: "Attempt " + (i3 + 1),
+            class: "bar " + step.status.toLowerCase(),
+            style: { left: left + "%", width: width + "%" }
+          },
+          i3
+        );
+      }) })
+    ] }, step.key)) });
+  }
+
+  // src/panel/state.ts
+  var state_exports = {};
+  __export(state_exports, {
+    action: () => action,
+    active: () => active,
+    asSource: () => asSource,
+    assetId: () => assetId,
+    assetSearch: () => assetSearch,
+    autoSearch: () => autoSearch,
+    automationSelection: () => automationSelection,
+    automationSource: () => automationSource,
+    busy: () => busy,
+    clip: () => clip,
+    config: () => config,
+    destination: () => destination,
+    detail: () => detail,
+    editor: () => editor,
+    errorsOnly: () => errorsOnly,
+    expression: () => expression,
+    fail: () => fail,
+    filter: () => filter,
+    invalidate: () => invalidate,
+    jobConfig: () => jobConfig,
+    keyOf: () => keyOf,
+    launch: () => launch,
+    launchedRun: () => launchedRun,
+    loadPage: () => loadPage,
+    localConfirmation: () => localConfirmation,
+    message: () => message,
+    openAutomation: () => openAutomation,
+    options: () => options,
+    page: () => page,
+    partition: () => partition,
+    partitionSearch: () => partitionSearch,
+    partitions: () => partitions,
+    profiles: () => profiles,
+    reloadProfiles: () => reloadProfiles,
+    requestOptions: () => requestOptions,
+    runId: () => runId,
+    runLocal: () => runLocal,
+    runSearch: () => runSearch,
+    scope: () => scope,
+    selectAsset: () => selectAsset,
+    setup: () => setup,
+    showRun: () => showRun,
+    snapshot: () => snapshot,
+    source: () => source,
+    switchProfile: () => switchProfile,
+    switching: () => switching,
+    sync: () => sync,
+    tab: () => tab,
+    tags: () => tags,
+    targets: () => targets
+  });
+
+  // src/types.ts
+  function isActiveRun(status) {
+    return ["QUEUED", "STARTING", "STARTED", "CANCELING", "MANAGED", "NOT_STARTED"].includes(status);
+  }
+  function countActiveRuns(data) {
+    return data?.activeRunCount ?? data?.runs.filter((run) => isActiveRun(run.status)).length ?? 0;
+  }
+
+  // src/panel/selection.ts
+  var keyOf = (a4) => JSON.stringify([a4.locationName, a4.repositoryName, a4.assetKey]);
+  var basket = atom([]);
+  function toggleAsset(asset, parts) {
+    const id = keyOf(asset), saved = read(basket);
+    set(
+      basket,
+      saved.some((e3) => e3.id === id) ? saved.filter((e3) => e3.id !== id) : [...saved, { id, parts }]
+    );
+  }
+  function selectionFor(assets, focus2, parts) {
+    const saved = read(basket);
+    const members = saved.map((e3) => assets.find((a4) => keyOf(a4) === e3.id));
+    const selected = members.filter((a4) => !!a4);
+    const focused = keyOf(focus2);
+    if (!saved.some((e3) => e3.id === focused)) selected.push(focus2);
+    const definitions = selected.map(
+      (a4) => keyOf(a4) === focused ? parts : saved.find((e3) => e3.id === keyOf(a4))?.parts
+    );
+    let reason = "";
+    if (members.some((a4) => !a4))
+      reason = "A selected asset is no longer available. Clear the selection.";
+    else if (selected.some(
+      (a4) => a4.locationName !== focus2.locationName || a4.repositoryName !== focus2.repositoryName
+    ))
+      reason = "Select assets from the same repository and code location.";
+    else if (selected.length > 1 && !focus2.jobNames.some(
+      (job) => job.startsWith("__ASSET_JOB") && selected.every((a4) => a4.jobNames.includes(job))
+    ))
+      reason = "Select assets that share an implicit asset job.";
+    else if (selected.some((a4) => a4.isPartitioned !== focus2.isPartitioned))
+      reason = "Select assets with compatible partition definitions.";
+    else if (focus2.isPartitioned && definitions.some((d3) => !d3))
+      reason = "Waiting for partition definitions.";
+    else if (focus2.isPartitioned && definitions.some((d3) => d3?.kind === "multi"))
+      reason = "Choose multidimensional partitions in Launchpad.";
+    else if (focus2.isPartitioned && definitions.some((d3) => d3?.kind !== parts?.kind || d3?.dimensionName !== parts?.dimensionName))
+      reason = "Selected assets use different partition dimensions.";
+    const keys = (parts?.keys ?? []).filter((k3) => k3.length <= 180 && definitions.every((d3) => d3?.keys.includes(k3))).slice(0, 100);
+    if (!reason && parts?.kind === "single" && !keys.length)
+      reason = "Selected assets have no common partition in the loaded keys.";
+    return { selected, keys, reason };
+  }
+
+  // src/panel/state.ts
+  var persist = { persist: "workspace" };
+  var tab = atom("dagster.tab", "assets", persist);
+  var editor = atom("dagster.editor", false, persist);
+  var expression = atom("");
+  var partitionSearch = atom("");
+  var assetSearch = atom("dagster.assets.search", "", persist);
+  var autoSearch = atom("dagster.automation.search", "", persist);
+  var runSearch = atom("dagster.runs.search", "", persist);
+  var runId = atom("dagster.run", "", persist);
+  var assetId = atom("dagster.asset", "", persist);
+  var savedScope = atom("dagster.scope", "", persist);
+  var profiles = atom(null);
+  var snapshot = atom(null);
+  var detail = atom(null);
+  var targets = atom([]);
+  var destination = atom("");
+  var filter = atom("All");
+  var page = atom(null);
+  var errorsOnly = atom(true);
+  var source = atom(null);
+  var partitions = atom(null);
+  var partition = atom("");
+  var config = atom("");
+  var tags = atom("");
+  var message = atom("");
+  var busy = atom(false);
+  var switching = atom(false);
+  var launchedRun = atom("");
+  var localConfirmation = atom(null);
+  function runLocal(name, confirmed) {
+    const id = epoch;
+    return action(async () => {
+      set(localConfirmation, null);
+      if (name === "local.focusLogs" || name === "local.stop") {
+        await plugin.request(name, scope(), requestOptions());
+      } else {
+        const { state } = await plugin.request(
+          name,
+          { ...scope(), ...confirmed && { confirmed } },
+          requestOptions()
+        );
+        if (current(id) && state.confirmation)
+          set(localConfirmation, { action: name, plan: state.confirmation });
+      }
+    });
+  }
+  var automationSource = atom(null);
+  var automationSelection = atom("");
+  var jobConfig = atom("");
+  var clip = (s3, length = 120) => (s3 ?? "").slice(0, length);
+  var options = (values) => values.map((value) => ({ value, label: value }));
+  var scope = () => ({
+    ...read(profiles)?.activeProfileId ? { profileId: read(profiles).activeProfileId } : {},
+    workspaceId: read(profiles)?.workspaceId ?? null
+  });
+  var active = () => read(profiles)?.profiles.find((p3) => p3.id === scope().profileId);
+  var asSource = (a4) => ({
+    kind: "asset",
+    name: a4.assetKey.join("/"),
+    assetKey: a4.assetKey,
+    locationName: a4.locationName,
+    repositoryName: a4.repositoryName,
+    ...a4.opNames?.length && { opNames: a4.opNames },
+    ...a4.dbtUniqueId && { dbtUniqueId: a4.dbtUniqueId },
+    codeReferences: a4.codeReferences
+  });
+  var openEditor;
+  var ctx;
+  var epoch = 0;
+  var generation = 0;
+  var listSeq = 0;
+  var runSeq = 0;
+  var assetSeq = 0;
+  var pageSeq = 0;
+  var polling = false;
+  var pendingPage = false;
+  var timer;
+  var idle = 15;
+  var fast = 3;
+  var logLimit = 200;
+  var current = (id) => id === epoch && !ctx.signal.aborted;
+  var requestOptions = () => ({ signal: ctx.signal });
+  function fail(e3) {
+    set(message, clip(e3 instanceof Error ? e3.message : String(e3), 700));
+  }
+  async function action(task, refresh = true) {
+    if (read(busy) || read(switching)) return;
+    const id = epoch;
+    set(busy, true);
+    set(message, "");
+    try {
+      await task();
+      if (refresh && current(id)) await sync();
+    } catch (e3) {
+      if (current(id)) fail(e3);
+    } finally {
+      if (current(id)) set(busy, false);
+    }
+  }
+  function launch(task) {
+    const id = epoch;
+    return action(async () => {
+      const result2 = await task();
+      if (current(id)) set(launchedRun, result2.runId);
+    });
+  }
+  var automationSeq = 0;
+  async function openAutomation(identity, input) {
+    const seq = ++automationSeq, id = epoch;
+    if (read(automationSelection) !== identity) set(jobConfig, "");
+    set(automationSelection, identity);
+    set(automationSource, null);
+    try {
+      const result2 = await plugin.request("source.open", { ...scope(), ...input }, requestOptions());
+      if (current(id) && seq === automationSeq) set(automationSource, result2);
+    } catch (e3) {
+      if (current(id) && seq === automationSeq) fail(e3);
+    }
+  }
+  async function selectAsset(a4, open = true) {
+    const seq = ++assetSeq, id = epoch;
+    clearAsset();
+    set(assetId, keyOf(a4));
+    set(source, null);
+    set(partitions, null);
+    set(partition, "");
+    set(config, "");
+    set(tags, "");
+    const valid = () => current(id) && seq === assetSeq;
+    const tasks = [];
+    if (open)
+      tasks.push(
+        plugin.request("source.open", { ...scope(), ...asSource(a4) }, requestOptions()).then((r3) => {
+          if (valid()) set(source, r3);
+        })
+      );
+    if (a4.isPartitioned)
+      tasks.push(
+        plugin.request(
+          "dagster.assetPartitions",
+          { ...scope(), assetKey: a4.assetKey, limit: 100 },
+          requestOptions()
+        ).then((r3) => {
+          if (valid()) {
+            set(partitions, r3);
+            set(partition, r3.keys[0] ?? "");
+          }
+        })
+      );
+    for (const r3 of await Promise.allSettled(tasks))
+      if (valid() && r3.status === "rejected") fail(r3.reason);
+  }
+  async function showRun(id, reset2 = true) {
+    const seq = ++runSeq, context = epoch;
+    if (reset2) {
+      set(compareKey, "");
+      set(comparison, "");
+      set(detail, null);
+      set(targets, []);
+      set(destination, "");
+    }
+    set(runId, id);
+    if (!id) return;
+    const valid = () => current(context) && seq === runSeq && read(runId) === id;
+    try {
+      const { run } = await plugin.request(
+        "dagster.runDetail",
+        { ...scope(), runId: id, errorsOnly: read(errorsOnly), limit: logLimit },
+        requestOptions()
+      );
+      if (!valid()) return;
+      const becameFailed = read(detail)?.status !== "FAILURE" && run.status === "FAILURE";
+      set(detail, run);
+      if (becameFailed || run.status === "FAILURE" && reset2) {
+        const result2 = await plugin.request("agent.listTargets", scope(), requestOptions());
+        if (valid()) {
+          set(targets, result2.terminals.slice(0, 50));
+          set(destination, result2.terminals[0]?.terminalId ?? "");
+        }
+      }
+    } catch (e3) {
+      if (valid()) fail(e3);
+    }
+  }
+  async function loadPage(more = false, refresh = false) {
+    if (more && pendingPage) return;
+    const previous = more ? read(page)?.runs ?? [] : [];
+    if (!more && !refresh) set(page, null);
+    const seq = ++pageSeq, id = epoch;
+    pendingPage = true;
+    try {
+      const result2 = await plugin.request(
+        "dagster.runs",
+        {
+          ...scope(),
+          filter: read(filter),
+          ...previous.length ? { cursor: previous.at(-1).runId } : {},
+          limit: refresh ? Math.max(30, read(page)?.runs.length ?? 0) : 30
+        },
+        requestOptions()
+      );
+      if (current(id) && seq === pageSeq) {
+        const runs = [
+          ...new Map([...previous, ...result2.runs].map((r3) => [r3.runId, r3])).values()
+        ].slice(0, 200);
+        set(page, {
+          runs,
+          hasMore: result2.hasMore && runs.length < 200 && runs.length > previous.length
+        });
+      }
+    } catch (e3) {
+      if (current(id) && seq === pageSeq) fail(e3);
+    } finally {
+      if (current(id) && seq === pageSeq) pendingPage = false;
+    }
+  }
+  function schedule() {
+    clearTimeout(timer);
+    if (ctx.signal.aborted) return;
+    const seconds = countActiveRuns(read(snapshot)) ? fast : idle;
+    timer = setTimeout(() => {
+      if (read(ctx.visible) && scope().profileId && !read(switching)) void sync();
+      else schedule();
+    }, seconds * 1e3);
+  }
+  async function sync() {
+    if (polling || !scope().profileId || !read(ctx.visible)) {
+      schedule();
+      return;
+    }
+    const id = epoch;
+    polling = true;
+    try {
+      const data = await plugin.request("dagster.snapshot", scope(), requestOptions());
+      if (!current(id)) return;
+      const first = !read(snapshot);
+      set(snapshot, data);
+      if (first && read(assetId)) {
+        const a4 = data.assets.find((a5) => keyOf(a5) === read(assetId));
+        if (a4) void selectAsset(a4, false);
+      }
+      if (read(backfill)) await track();
+      if (!read(editor) && read(tab) === "dag") {
+        if (read(runId)) await showRun(read(runId), false);
+        await refreshHealth();
+      }
+      if (!read(editor) && read(tab) === "runs") {
+        if (read(runId)) await showRun(read(runId), !read(detail));
+        else if (!pendingPage) await loadPage(false, true);
+      }
+    } catch (e3) {
+      if (current(id)) fail(e3);
+    } finally {
+      if (current(id)) {
+        polling = false;
+        schedule();
+      }
+    }
+  }
+  function invalidate() {
+    epoch++;
+    reset();
+    polling = false;
+    pendingPage = false;
+    clearTimeout(timer);
+    set(basket, []);
+    set(expression, "");
+    set(partitionSearch, "");
+    set(launchedRun, "");
+    set(automationSource, null);
+    set(jobConfig, "");
+    set(snapshot, null);
+    set(detail, null);
+    set(source, null);
+    set(page, null);
+    set(busy, false);
+    set(localConfirmation, null);
+    set(message, "");
+  }
+  async function reloadProfiles() {
+    const seq = ++listSeq, session = generation;
+    try {
+      const result2 = await plugin.request("profiles.list", void 0, requestOptions());
+      if (session !== generation || seq !== listSeq || ctx.signal.aborted) return;
+      const key = JSON.stringify([result2.workspaceId, result2.activeProfileId]);
+      if (read(savedScope) !== key) {
+        invalidate();
+        set(savedScope, key);
+        set(assetId, "");
+        set(runId, "");
+        set(automationSelection, "");
+        set(filter, "All");
+      }
+      set(profiles, result2);
+      set(switching, false);
+      if (result2.showProfiles || read(editor)) openEditor();
+      await sync();
+      if ((result2.showSourcePicker || !read(editor) && read(tab) === "dag") && result2.activeProfileId && session === generation && seq === listSeq) {
+        set(tab, "dag");
+        set(editor, false);
+        set(pickerOpen, !!result2.showSourcePicker);
+        await loadGraph(true);
+        if (result2.sourcePickerPath && session === generation && seq === listSeq)
+          await ensureGraphIndex();
+        if (result2.sourcePickerPath && session === generation && seq === listSeq) {
+          const match = read(index)?.files.find((f4) => f4.path === result2.sourcePickerPath);
+          if (match) {
+            set(file, match.path);
+            if (match.assetIds.length === 1) {
+              const node = read(graph).find((n2) => n2.keyString === match.assetIds[0]);
+              if (node) await selectAsset(node, false);
+            }
+          } else set(message, "No asset found for " + result2.sourcePickerPath);
+        }
+      }
+    } catch (e3) {
+      if (session === generation && seq === listSeq && !ctx.signal.aborted) {
+        set(switching, false);
+        fail(e3);
+      }
+    }
+  }
+  async function switchProfile(profileId2) {
+    if (read(switching)) return;
+    invalidate();
+    ++listSeq;
+    set(switching, true);
+    const id = epoch;
+    try {
+      await plugin.request("profiles.select", { ...scope(), profileId: profileId2 }, requestOptions());
+    } catch (e3) {
+      if (current(id)) fail(e3);
+    } finally {
+      if (current(id)) await reloadProfiles();
+    }
+  }
+  function setup(context, ensureEditor2, workspaceReady) {
+    openEditor = ensureEditor2;
+    ctx = context;
+    generation++;
+    epoch++;
+    reset();
+    polling = false;
+    pendingPage = false;
+    const session = generation;
+    async function configure() {
+      try {
+        const values = await settings.get();
+        if (ctx.signal.aborted || generation !== session) return;
+        idle = Math.min(300, Math.max(5, Number(values.pollIntervalIdleSec) || 15));
+        fast = Math.min(60, Math.max(1, Number(values.pollIntervalActiveSec) || 3));
+        logLimit = Math.min(1e3, Math.max(50, Number(values.maxRunLogLines) || 200));
+        schedule();
+      } catch (e3) {
+        if (generation === session && !ctx.signal.aborted) fail(e3);
+      }
+    }
+    ctx.subscriptions.push(
+      settings.onDidChange(configure),
+      plugin.on("dagster.workspaceChanged", async () => {
+        invalidate();
+        const seq = ++listSeq;
+        set(switching, true);
+        set(profiles, null);
+        await workspaceReady?.();
+        if (seq === listSeq && !ctx.signal.aborted) await reloadProfiles();
+      }),
+      plugin.on("dagster.stateChanged", (event) => {
+        if (!polling && !read(switching) && read(ctx.visible) && event.activeProfileId === scope().profileId && event.syncedAt !== read(snapshot)?.syncedAt)
+          void sync();
+      }),
+      plugin.on("dagster.definitionsChanged", (event) => {
+        if ((!event.profileId || event.profileId === scope().profileId) && (!event.workspaceId || event.workspaceId === scope().workspaceId)) {
+          clearCatalog();
+          if (read(tab) === "dag") void loadGraph(true).catch(fail);
+        }
+      }),
+      plugin.on("dagster.sourcePicker", () => {
+        set(tab, "dag");
+        set(editor, false);
+        void reloadProfiles();
+      }),
+      plugin.on("dagster.showProfiles", () => {
+        set(editor, true);
+        if (read(profiles)) ensureEditor2();
+        void reloadProfiles();
+      })
+    );
+    void configure();
+    void reloadProfiles();
+    let visible = read(ctx.visible);
+    const visibilityTimer = setInterval(() => {
+      const now = read(ctx.visible);
+      if (!visible && now && !read(switching)) void sync();
+      visible = now;
+    }, 250);
+    const cleanup = () => {
+      clearInterval(visibilityTimer);
+      generation++;
+      epoch++;
+      clearTimeout(timer);
+    };
+    ctx.signal.addEventListener("abort", cleanup, { once: true });
+  }
+
+  // src/panel/explorer-state.ts
+  var graph = atom([]);
+  var health = atom([]);
+  var index = atom(null);
+  var fileSearch = atom("");
+  var pickerOpen = atom(false);
+  var sources = atom(true);
+  var indexing = atom(false);
+  var queryDraft = atom("");
+  var queryTimer;
+  function changeQuery(value, debounce = false) {
+    clearTimeout(queryTimer);
+    set(queryDraft, value);
+    if (debounce) queryTimer = setTimeout(() => set(query, value), 150);
+    else set(query, value);
+  }
+  var query = atom("");
+  var file = atom("");
+  var review = atom([]);
+  var completed = atom({});
+  var pages = atom(null);
+  var range = atom("failed");
+  var preview = atom(null);
+  var backfill = atom("");
+  var progress = atom("");
+  var columnHistory = atom(null);
+  var column = atom("");
+  var flow = atom([]);
+  var compareKey = atom("");
+  var comparison = atom("");
+  var lineage = atom([]);
+  var generation2 = 0;
+  var focus = 0;
+  var graphRequest = 0;
+  var healthFetchedAt = 0;
+  function clearAsset() {
+    focus++;
+    set(pages, null);
+    set(range, "failed");
+    set(preview, null);
+    set(columnHistory, null);
+    set(column, "");
+    set(lineage, []);
+    set(flow, []);
+  }
+  function clearCatalog() {
+    generation2++;
+    healthFetchedAt = 0;
+    clearAsset();
+    set(fileSearch, "");
+    set(graph, []);
+    set(health, []);
+    set(index, null);
+    changeQuery("");
+    set(sources, true);
+    set(pickerOpen, false);
+    cancelIndex();
+    token = void 0;
+    pending2 = void 0;
+    set(file, "");
+    set(review, []);
+    set(completed, {});
+  }
+  function reset() {
+    clearCatalog();
+    set(backfill, "");
+    set(progress, "");
+    set(compareKey, "");
+    set(comparison, "");
+  }
+  function guarded(asset = false) {
+    const epoch2 = generation2, id = focus, part = read(partition);
+    return () => epoch2 === generation2 && (!asset || id === focus && part === read(partition)) && !requestOptions().signal.aborted;
+  }
+  var token;
+  var pending2;
+  var graphToken = () => token;
+  var indexRequest;
+  function cancelIndex() {
+    indexRequest?.abort.abort();
+    indexRequest = void 0;
+    set(indexing, false);
+  }
+  async function ensureGraphIndex() {
+    if (read(index)) return;
+    const current2 = guarded();
+    if (pending2) await pending2;
+    else if (!token) await loadGraph();
+    if (current2() && token && !read(index)) await loadIndex(token);
+  }
+  function loadIndex(graphToken2) {
+    if (indexRequest) return indexRequest.promise;
+    const valid = guarded(), abort = new AbortController();
+    const signal = AbortSignal.any([abort.signal, requestOptions().signal]);
+    set(indexing, true);
+    const promise = plugin.request("source.index", { ...scope(), token: graphToken2 }, { signal, timeoutMs: 12e4 }).then((result2) => {
+      if (valid() && token === graphToken2) set(index, result2);
+    }).catch((e3) => {
+      if (!signal.aborted && valid() && token === graphToken2) fail(e3);
+    }).finally(() => {
+      if (indexRequest?.abort === abort) {
+        indexRequest = void 0;
+        set(indexing, false);
+      }
+    });
+    indexRequest = { abort, promise };
+    return promise;
+  }
+  function loadGraph(withIndex = false) {
+    const current2 = guarded(), seq = ++graphRequest;
+    const valid = () => current2() && seq === graphRequest;
+    token = void 0;
+    set(review, []);
+    set(completed, {});
+    set(index, null);
+    cancelIndex();
+    async function load() {
+      let page2 = await plugin.request("dagster.graph", scope(), requestOptions());
+      const nodes = [...page2.nodes];
+      while (page2.next !== void 0) {
+        if (!valid()) return;
+        page2 = await plugin.request(
+          "dagster.graph",
+          { ...scope(), token: page2.token, offset: page2.next },
+          requestOptions()
+        );
+        for (const node of page2.nodes) nodes.push(node);
+      }
+      if (!valid()) return;
+      token = page2.token;
+      set(graph, nodes);
+      const bundled = nodes.every((n2) => n2.health);
+      if (bundled) {
+        healthFetchedAt = Date.now();
+        set(
+          health,
+          nodes.map((n2) => ({ id: n2.keyString, assetKey: n2.assetKey, ...n2.health }))
+        );
+      }
+      if (withIndex) void loadIndex(page2.token);
+      if (!bundled) await refreshHealth(true);
+    }
+    const request = load().catch((e3) => {
+      if (valid()) fail(e3);
+    }).finally(() => {
+      if (seq === graphRequest) pending2 = void 0;
+    });
+    pending2 = request;
+    return request;
+  }
+  async function refreshHealth(force = false) {
+    if (!read(graph).length || !force && Date.now() - healthFetchedAt < 15e3) return;
+    const valid = guarded(), request = graphRequest;
+    healthFetchedAt = Date.now();
+    const rows = await plugin.request("dagster.health", scope(), requestOptions());
+    if (valid() && request === graphRequest) set(health, rows);
+  }
+  async function loadPage2(assetKey, more = false, fixed) {
+    const valid = guarded(true), old = read(pages);
+    const result2 = await plugin.request(
+      "dagster.partitionPage",
+      {
+        ...scope(),
+        assetKey,
+        ...(more || fixed) && old?.token ? { token: old.token } : {},
+        ...fixed ?? old?.fixed ? { fixed: fixed ?? old?.fixed } : {},
+        ...more && old ? { cursor: old.cursor } : {}
+      },
+      requestOptions()
+    );
+    if (valid()) {
+      set(pages, { ...result2, rows: [...more ? old?.rows ?? [] : [], ...result2.rows] });
+      set(preview, null);
+    }
+  }
+  async function track() {
+    const id = read(backfill), valid = guarded();
+    if (!id || /^(COMPLETED|FAILED|CANCELED)/.test(read(progress))) return;
+    const r3 = await plugin.request(
+      "dagster.backfillStatus",
+      { ...scope(), backfillId: id },
+      requestOptions()
+    );
+    if (valid() && id === read(backfill)) set(progress, r3.status + " \xB7 " + r3.progress);
+  }
+  async function prepareBackfill(assetKey) {
+    const valid = guarded(true), selection = read(range).trim();
+    const page2 = read(pages);
+    if (!page2) throw Error("Load partitions first.");
+    const result2 = await plugin.request(
+      "dagster.prepareBackfill",
+      {
+        ...scope(),
+        assetKey,
+        selection,
+        ...page2.fixed && { fixed: page2.fixed },
+        ...page2.token && { token: page2.token }
+      },
+      requestOptions()
+    );
+    if (valid() && page2 === read(pages) && selection === read(range).trim()) set(preview, result2);
+  }
+
+  // src/panel/graph.tsx
+  function memo(compute) {
+    let previous, result2;
+    return (...args) => {
+      if (!previous || args.some((arg, i3) => arg !== previous[i3])) {
+        result2 = compute(...args);
+        previous = args;
+      }
+      return result2;
+    };
+  }
+  var layoutFor = memo(
+    (topology, sources2) => computeVerticalDagLayout(
+      sources2 ? topology : topology.filter((n2) => n2.isMaterializable !== false || n2.dependencyKeys.length),
+      {
+        includeExternalSources: sources2,
+        nodeWidth: 200,
+        nodeHeight: 64,
+        horizontalGap: 22,
+        verticalGap: 44,
+        padding: 24
+      }
+    )
+  );
+  var catalogFor = memo((topology, assets) => {
+    const latest = new Map(assets.map((a4) => [keyOf(a4), a4]));
+    const nodes = topology.map((n2) => ({ ...n2, ...latest.get(n2.keyString) }));
+    return { nodes, byId: new Map(nodes.map((n2) => [n2.keyString, n2])) };
+  });
+  var changesFor = memo((idx) => {
+    const files = new Map(idx?.files.map((f4) => [f4.path, f4]));
+    const direct = new Set(idx?.changed.flatMap((p3) => files.get(p3)?.assetIds ?? []));
+    const ambiguous = new Set(idx?.ambiguous);
+    const details = idx?.changed.map((p3) => (files.has(p3) ? "Mapped" : ambiguous.has(p3) ? "Ambiguous" : "Unmapped") + " \xB7 " + p3).join("\n");
+    return { direct, details };
+  });
+  var impactFor = memo(
+    (nodes, changed) => evaluateAssetSelection("changed*", nodes, { changed }).matchedKeys
+  );
+  var healthFor = memo((rows) => ({
+    metadata: new Map(rows.map((h3) => [h3.id, h3])),
+    failed: new Set(rows.filter((h3) => h3.failed?.length).map((h3) => h3.id))
+  }));
+  var selectionFor2 = memo(
+    (query2, nodes, changed, failedChecks) => evaluateAssetSelection(query2, nodes, { changed, failedChecks })
+  );
+  var chipsFor = memo((nodes) => {
+    const chips = [
+      { label: "All", value: "" },
+      ...["roots(*)", "sinks(*)"].map((value) => ({ label: value, value }))
+    ];
+    for (const [attribute, values] of [
+      ["kind", nodes.flatMap((n2) => n2.kinds ?? [])],
+      ["group", nodes.map((n2) => n2.groupName)]
+    ]) {
+      for (const name of [...new Set(values)].sort()) {
+        chips.push({ label: attribute + ":" + name, value: attribute + ":" + JSON.stringify(name) });
+      }
+    }
+    return chips;
+  });
+  var badgesFor = memo(
+    (nodes, metadata, direct, impact, run, flow2) => {
+      const steps = new Map(run?.steps.map((st) => [st.key.split("[")[0], st]));
+      const columns = /* @__PURE__ */ new Map();
+      for (const item of flow2) {
+        const names = columns.get(item.id) ?? [];
+        names.push(item.column);
+        columns.set(item.id, names);
+      }
+      const badges = {};
+      for (const n2 of nodes) {
+        const health3 = metadata.get(n2.keyString);
+        const step = run?.repositoryName === n2.repositoryName && run.locationName === n2.locationName ? n2.opNames?.map((op) => steps.get(op)).find(Boolean) : void 0;
+        badges[n2.keyString] = [
+          direct.has(n2.keyString) ? "changed" : impact.has(n2.keyString) ? "downstream" : "",
+          n2.staleStatus === "STALE" ? "stale" : "",
+          health3?.freshness && !["NOT_APPLICABLE", "FRESH", "UNKNOWN"].includes(health3.freshness) ? health3.freshness : "",
+          health3?.failed?.length ? "checks failed" : "",
+          step?.status,
+          step?.attempts && step.attempts.length > 1 ? "attempt " + step.attempts.length : "",
+          ...columns.get(n2.keyString) ?? []
+        ].filter(Boolean).join(" \xB7 ");
+      }
+      return badges;
+    }
+  );
+  function Graph({ data }) {
+    const topology = read(graph), sources2 = read(sources);
+    const layout = layoutFor(topology, sources2);
+    const { nodes, byId } = catalogFor(topology, data.assets);
+    const query2 = read(query), idx = read(index);
+    const { direct, details } = changesFor(idx);
+    const impact = impactFor(topology, direct);
+    const { metadata, failed } = healthFor(read(health));
+    const evalResult = selectionFor2(query2, nodes, direct, failed);
+    const matched = evalResult.matchedKeys;
+    const stale = nodes.filter((n2) => n2.staleStatus === "STALE").map((n2) => n2.keyString);
+    const file2 = idx?.files.find((f4) => f4.path === read(file));
+    const find = (id) => {
+      const n2 = byId.get(id);
+      if (n2) void selectAsset(n2, false);
+    };
+    const badges = badgesFor(nodes, metadata, direct, impact, read(detail), read(flow));
+    const groups = /* @__PURE__ */ new Map();
+    for (const id of read(review)) {
+      const n2 = byId.get(id);
+      if (!n2) continue;
+      const group = JSON.stringify([
+        n2.locationName,
+        n2.repositoryName,
+        n2.jobNames.find((j2) => j2.startsWith("__ASSET_JOB")),
+        n2.isPartitioned ? n2.keyString : ""
+      ]);
+      const members = groups.get(group) ?? [];
+      members.push(n2);
+      groups.set(group, members);
+    }
+    function review2(ids) {
+      set(
+        review,
+        [...ids].filter((id) => byId.get(id)?.isMaterializable !== false)
+      );
+      set(completed, {});
+    }
+    const focused = byId.get(read(assetId));
+    const latest = focused?.lastRunId;
+    const actions = [
+      { label: "Materialize Changed", ids: direct, enabled: direct.size > 0 },
+      { label: "Materialize Changed + Downstream", ids: impact, enabled: impact.size > 0 },
+      { label: "Materialize Stale", ids: stale, enabled: stale.length > 0 }
+    ];
+    return /* @__PURE__ */ a3(Stack, { children: [
+      /* @__PURE__ */ a3(Toolbar, { label: "Asset selection", children: [
+        /* @__PURE__ */ a3(
+          Input,
+          {
+            label: "Asset selection",
+            labelHidden: true,
+            placeholder: "Select assets by key or expression",
+            value: read(queryDraft),
+            maxLength: 2e3,
+            invalid: !!evalResult.error,
+            onChange: (v3) => changeQuery(v3, true),
+            onSubmit: (v3) => changeQuery(v3)
+          }
+        ),
+        /* @__PURE__ */ a3(
+          Button,
+          {
+            tone: "accent",
+            variant: "solid",
+            icon: "play",
+            disabled: read(queryDraft) !== query2 || !evalResult.matchedAssets.some((n2) => n2.isMaterializable !== false),
+            onPress: () => review2(matched),
+            children: "Materialize"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ a3(Toolbar, { label: "Selection filters", children: [
+        chipsFor(topology).map((chip) => /* @__PURE__ */ a3(
+          Button,
+          {
+            tooltip: chip.label,
+            tone: query2 === chip.value ? "accent" : "neutral",
+            onPress: () => changeQuery(chip.value),
+            children: chip.label
+          },
+          chip.label
+        )),
+        /* @__PURE__ */ a3(Checkbox, { label: "Sources", checked: sources2, onChange: (v3) => set(sources, v3) })
+      ] }),
+      query2 && evalResult.error && /* @__PURE__ */ a3(Text, { tone: "danger", children: evalResult.error }),
+      /* @__PURE__ */ a3(Toolbar, { label: "Graph tools", children: [
+        /* @__PURE__ */ a3(
+          Collapsible,
+          {
+            title: "Git diff \xB7 " + (idx?.gitError ? "Unavailable" : idx ? idx.changed.length + " changed \xB7 " + direct.size + " assets" : read(indexing) ? "Indexing\u2026" : "No index"),
+            defaultOpen: read(pickerOpen),
+            children: /* @__PURE__ */ a3(Stack, { children: [
+              idx?.gitError && /* @__PURE__ */ a3(Text, { children: idx.gitError }),
+              details && /* @__PURE__ */ a3(CodeView, { code: details, language: "text", wrap: true, maxHeight: "sm" }),
+              /* @__PURE__ */ a3(Button, { onPress: () => loadGraph(true).catch(fail), children: "Refresh graph and Git changes" }),
+              idx && /* @__PURE__ */ a3(
+                Input,
+                {
+                  type: "search",
+                  label: "Find source file",
+                  value: read(fileSearch),
+                  onChange: (v3) => set(fileSearch, v3)
+                }
+              ),
+              idx && /* @__PURE__ */ a3(
+                Select,
+                {
+                  label: "Show asset for source file",
+                  value: read(file),
+                  options: [
+                    { value: "", label: "Choose source file" },
+                    ...idx.files.filter((f4) => f4.path.toLowerCase().includes(read(fileSearch).toLowerCase())).map((f4) => ({ value: f4.path, label: f4.path }))
+                  ],
+                  onChange: (v3) => {
+                    set(file, v3);
+                    const ids = idx.files.find((f4) => f4.path === v3)?.assetIds;
+                    if (ids?.length === 1) find(ids[0]);
+                  }
+                }
+              ),
+              file2 && file2.assetIds.length > 1 && /* @__PURE__ */ a3(
+                Select,
+                {
+                  label: "Assets in source file",
+                  value: read(assetId),
+                  options: file2.assetIds.map((id) => ({
+                    value: id,
+                    label: byId.get(id)?.assetKey.join("/") ?? id
+                  })),
+                  onChange: find
+                }
+              ),
+              /* @__PURE__ */ a3(Row, { wrap: true, children: actions.map(({ label, ids, enabled }) => /* @__PURE__ */ a3(Button, { disabled: !enabled, onPress: () => review2(ids), children: label }, label)) })
+            ] })
+          }
+        ),
+        /* @__PURE__ */ a3(
+          Select,
+          {
+            label: "Run overlay",
+            labelHidden: true,
+            value: read(runId),
+            options: [
+              { value: "", label: "Run overlay" },
+              ...data.runs.map((r3) => ({
+                value: r3.runId,
+                label: r3.pipelineName + " \xB7 " + r3.status + " \xB7 " + r3.runId.slice(0, 8)
+              }))
+            ],
+            onChange: (id) => showRun(id)
+          }
+        )
+      ] }),
+      read(lineage).length > 0 && /* @__PURE__ */ a3(
+        Button,
+        {
+          onPress: () => {
+            set(lineage, []);
+            set(flow, []);
+          },
+          children: "Clear column lineage"
+        }
+      ),
+      /* @__PURE__ */ a3(
+        GraphSurface,
+        {
+          layout,
+          badges,
+          checks: metadata,
+          assets: byId,
+          selected: read(assetId),
+          edgeHighlights: read(lineage).length ? new Set(
+            read(flow).flatMap((f4) => f4.upstreamIds.map((id) => JSON.stringify([id, f4.id])))
+          ) : void 0,
+          highlighted: read(lineage).length ? new Set(read(lineage)) : matched,
+          select: find
+        }
+      ),
+      groups.size > 0 && /* @__PURE__ */ a3(Stack, { children: [
+        /* @__PURE__ */ a3(Toolbar, { label: "Materialization review", children: [
+          /* @__PURE__ */ a3(Text, { children: [
+            "Review ",
+            read(review).length,
+            " selected"
+          ] }),
+          /* @__PURE__ */ a3(Button, { onPress: () => review2([]), children: "Close review" })
+        ] }),
+        [...groups.entries()].map(([id, members]) => {
+          const first = members[0], partitioned = first.isPartitioned, done = read(completed)[id];
+          const page2 = read(pages);
+          const keys = page2?.rows.map((r3) => r3.key) ?? read(partitions)?.keys ?? [];
+          const pickPage = async (fixed, more = false) => {
+            await loadPage2(first.assetKey, more, fixed);
+            if (read(assetId) === first.keyString) {
+              const keys2 = read(pages)?.rows.map((r3) => r3.key) ?? [];
+              if (!keys2.includes(read(partition))) set(partition, keys2[0] ?? "");
+            }
+          };
+          return /* @__PURE__ */ a3(Card, { title: "Review \xB7 " + first.repositoryName, children: /* @__PURE__ */ a3(Stack, { children: [
+            /* @__PURE__ */ a3(Text, { children: members.map((n2) => n2.assetKey.join("/")).join(", ") }),
+            partitioned && /* @__PURE__ */ a3(
+              Button,
+              {
+                onPress: () => action(async () => {
+                  await selectAsset(first, false);
+                  if (read(assetId) === first.keyString) await pickPage();
+                }, false),
+                children: "Choose partition"
+              }
+            ),
+            partitioned && read(assetId) === first.keyString && /* @__PURE__ */ a3(Stack, { children: [
+              page2?.dimensions?.map((d3) => /* @__PURE__ */ a3(
+                Select,
+                {
+                  label: d3.name,
+                  value: page2.fixed?.[d3.name],
+                  options: options(d3.partitionKeys),
+                  onChange: (v3) => action(() => pickPage({ ...page2.fixed, [d3.name]: v3 }), false)
+                },
+                d3.name
+              )),
+              /* @__PURE__ */ a3(
+                Select,
+                {
+                  label: "Partition to launch",
+                  options: options(keys),
+                  value: read(partition),
+                  onChange: (v3) => {
+                    set(columnHistory, null);
+                    set(preview, null);
+                    set(partition, v3);
+                  }
+                }
+              ),
+              page2?.hasMore && /* @__PURE__ */ a3(Button, { onPress: () => action(() => pickPage(page2.fixed, true), false), children: "More partition keys" })
+            ] }),
+            done ? /* @__PURE__ */ a3(Text, { children: "Launched " + done }) : /* @__PURE__ */ a3(
+              Button,
+              {
+                disabled: read(busy) || partitioned && (read(assetId) !== first.keyString || !keys.includes(read(partition))),
+                onPress: () => action(async () => {
+                  const valid = guarded();
+                  const r3 = await plugin.request(
+                    "dagster.materialize",
+                    {
+                      ...scope(),
+                      assetKeys: members.map((n2) => n2.assetKey),
+                      ...partitioned ? { partitionKey: read(partition) } : {}
+                    },
+                    requestOptions()
+                  );
+                  if (valid()) {
+                    set(completed, { ...read(completed), [id]: r3.runId });
+                    set(launchedRun, r3.runId);
+                  }
+                }),
+                children: "Launch reviewed group"
+              }
+            )
+          ] }) }, id);
+        })
+      ] }),
+      focused && /* @__PURE__ */ a3(Card, { title: focused.assetKey.join("/"), children: /* @__PURE__ */ a3(Stack, { children: [
+        /* @__PURE__ */ a3(Text, { children: [
+          badges[focused.keyString],
+          ...metadata.get(focused.keyString)?.causes ?? [],
+          ...metadata.get(focused.keyString)?.failed ?? []
+        ].filter(Boolean).join(" \xB7 ") }),
+        [
+          ...layout.edges.filter(
+            (e3) => e3.from === focused.keyString || e3.to === focused.keyString
+          )
+        ].map((e3) => {
+          const up = e3.to === focused.keyString, other = up ? e3.from : e3.to;
+          return /* @__PURE__ */ a3(Button, { disabled: !byId.has(other), onPress: () => find(other), children: (up ? "Upstream \xB7 " : "Downstream \xB7 ") + (byId.get(other)?.assetKey.join("/") ?? other) }, e3.id);
+        }),
+        /* @__PURE__ */ a3(
+          Button,
+          {
+            onPress: () => {
+              clearAsset();
+              set(assetId, "");
+            },
+            children: "Close details"
+          }
+        ),
+        /* @__PURE__ */ a3(
+          Button,
+          {
+            onPress: () => {
+              set(tab, "assets");
+            },
+            children: "Inspect asset"
+          }
+        ),
+        latest && /* @__PURE__ */ a3(
+          Button,
+          {
+            onPress: () => {
+              set(tab, "runs");
+              void showRun(latest);
+            },
+            children: "Latest run"
+          }
+        )
+      ] }) })
+    ] });
+  }
+
+  // src/local/port.ts
+  function localPort(profile, resolvedUrl = profile.url) {
+    if (profile.local?.port !== void 0) return profile.local.port;
+    try {
+      return Number(new URL(resolvedUrl).port) || 3e3;
+    } catch {
+      return 3e3;
+    }
+  }
+
+  // src/panel/asset-details.tsx
+  function AssetDetails({ asset }) {
+    const key = asset.assetKey, history = read(columnHistory), page2 = read(pages), preview2 = read(preview);
+    const partition2 = read(partition);
+    async function loadColumns() {
+      const valid = guarded(true);
+      const h3 = await plugin.request(
+        "dagster.columns",
+        { ...scope(), assetKey: key, ...partition2 ? { partition: partition2 } : {} },
+        requestOptions()
+      );
+      if (valid()) set(columnHistory, h3);
+    }
+    return /* @__PURE__ */ a3(Stack, { children: [
+      /* @__PURE__ */ a3(Button, { onPress: () => action(loadColumns, false), children: "Inspect column schema" }),
+      history && /* @__PURE__ */ a3(Card, { title: "Columns", children: /* @__PURE__ */ a3(Stack, { children: [
+        !history.columns && /* @__PURE__ */ a3(Text, { children: "Column schema unavailable" }),
+        history.columns?.map((c3) => {
+          const prior = history.previous?.find((p3) => p3.name === c3.name);
+          const change2 = history.previous ? !prior ? " \xB7 added" : prior.type !== c3.type ? " \xB7 was " + prior.type : "" : "";
+          return /* @__PURE__ */ a3(
+            Button,
+            {
+              onPress: () => action(async () => {
+                const valid = guarded(true);
+                if (!read(graph).length) await loadGraph();
+                if (!valid()) return;
+                const token2 = graphToken();
+                const lineage2 = await plugin.request(
+                  "dagster.columnFlow",
+                  {
+                    ...scope(),
+                    assetKey: key,
+                    assetId: keyOf(asset),
+                    ...token2 && { token: token2 },
+                    column: c3.name,
+                    ...partition2 ? { partition: partition2 } : {}
+                  },
+                  requestOptions()
+                );
+                if (!valid()) return;
+                set(column, c3.name);
+                set(
+                  lineage,
+                  lineage2.map((l3) => l3.id)
+                );
+                set(flow, lineage2);
+                set(tab, "dag");
+              }, false),
+              children: c3.name + " \xB7 " + c3.type + change2 + (c3.description ? " \xB7 " + c3.description : "")
+            },
+            c3.name
+          );
+        }),
+        history.columns && history.previous?.filter((p3) => !history.columns.some((c3) => c3.name === p3.name)).map((c3) => /* @__PURE__ */ a3(Text, { children: c3.name + " \xB7 removed" }, c3.name)),
+        history.columns && !history.previous && /* @__PURE__ */ a3(Text, { children: "Previous schema unavailable" })
+      ] }) }),
+      asset.isPartitioned && /* @__PURE__ */ a3(Card, { title: "Partition status", children: /* @__PURE__ */ a3(Stack, { children: [
+        /* @__PURE__ */ a3(Button, { onPress: () => action(() => loadPage2(key), false), children: "Load partition grid" }),
+        page2?.dimensions?.map((d3) => /* @__PURE__ */ a3(
+          Select,
+          {
+            label: d3.name,
+            options: options(d3.partitionKeys),
+            value: page2.fixed?.[d3.name],
+            onChange: (v3) => action(() => loadPage2(key, false, { ...page2.fixed, [d3.name]: v3 }), false)
+          },
+          d3.name
+        )),
+        page2 && /* @__PURE__ */ a3(
+          PartitionGrid,
+          {
+            page: page2,
+            select: (partitionKey, status) => action(async () => {
+              const valid = guarded(true);
+              const r3 = await plugin.request(
+                "dagster.partitionRun",
+                { ...scope(), assetKey: key, partition: partitionKey },
+                requestOptions()
+              );
+              if (!valid()) return;
+              set(partition, partitionKey);
+              set(columnHistory, null);
+              set(range, partitionKey);
+              set(preview, null);
+              if (status === "failed" && r3.runId) {
+                set(tab, "runs");
+                await showRun(r3.runId);
+              }
+            }, false)
+          }
+        ),
+        page2?.hasMore && /* @__PURE__ */ a3(Button, { onPress: () => action(() => loadPage2(key, true), false), children: "More partitions" }),
+        page2 && /* @__PURE__ */ a3(
+          Input,
+          {
+            label: "Backfill partitions",
+            placeholder: "failed or start..end",
+            value: read(range),
+            onChange: (v3) => {
+              set(range, v3);
+              set(preview, null);
+            }
+          }
+        ),
+        page2 && /* @__PURE__ */ a3(
+          Button,
+          {
+            disabled: read(busy),
+            onPress: () => action(() => prepareBackfill(key), false),
+            children: "Preview backfill"
+          }
+        ),
+        preview2 && /* @__PURE__ */ a3(Stack, { children: [
+          /* @__PURE__ */ a3(Text, { children: preview2.targets.map(
+            (t3) => t3.assetKey.path.join("/") + " \xB7 " + (t3.partitions?.partitionKeys?.join(", ") || t3.partitions?.ranges?.map((r3) => r3.start + ".." + r3.end).join(", ") || "unpartitioned")
+          ).join("\n") }),
+          /* @__PURE__ */ a3(
+            Button,
+            {
+              disabled: read(busy),
+              onPress: () => action(async () => {
+                const valid = guarded(true);
+                const result2 = await plugin.request(
+                  "dagster.launchBackfill",
+                  { ...scope(), assetKey: key, keys: preview2.keys },
+                  requestOptions()
+                );
+                if (valid()) {
+                  set(preview, null);
+                  set(backfill, result2.backfillId);
+                  set(progress, "");
+                  await track();
+                }
+              }, false),
+              children: "Launch backfill \xB7 " + preview2.keys.length + " partitions"
+            }
+          )
+        ] })
+      ] }) })
+    ] });
+  }
+
+  // src/links.ts
+  function dagsterUrl(base, target) {
+    const url = new URL(base);
+    if (!["http:", "https:"].includes(url.protocol) || url.username || url.password) {
+      throw new Error("Enter an HTTP or HTTPS Dagster URL without credentials.");
+    }
+    url.search = "";
+    url.hash = "";
+    const path = url.pathname.replace(/\/+$/, "").replace(/\/graphql$/, "");
+    let route;
+    if (target.kind === "lineage") {
+      const expression2 = target.expression.trim();
+      route = "/asset-groups" + (expression2 ? "~" + encodeURIComponent(expression2) : "") + "/";
+    } else if (target.kind === "partitions") {
+      route = "/assets/" + target.assetKey.map(encodeURIComponent).join("/");
+      url.searchParams.set("view", "partitions");
+    } else if (target.kind === "asset") {
+      route = "/assets/" + (target.assetKey ?? [target.name]).map(encodeURIComponent).join("/");
+    } else if (target.kind === "run") {
+      route = "/runs/" + encodeURIComponent(target.runId);
+    } else if (target.locationName) {
+      const location = encodeURIComponent(target.locationName);
+      const repo = target.repositoryName;
+      const address = !repo || repo === "__repository__" ? location : encodeURIComponent(repo) + "@" + location;
+      const root = "/locations/" + address;
+      if (target.kind === "launchpad") {
+        route = root + "/jobs/" + encodeURIComponent(target.jobName) + "/playground";
+        if (target.assetKeys?.length) {
+          route += "/setup";
+          target.assetKeys.forEach(
+            (key, i3) => key.forEach((part, j2) => {
+              url.searchParams.append("assetSelection[" + i3 + "][path][" + j2 + "]", part);
+            })
+          );
+        }
+      } else {
+        route = root + "/" + target.kind + "s/" + encodeURIComponent(target.name);
+      }
+    } else if (target.kind === "job") {
+      route = "/guess/" + encodeURIComponent(target.name);
+    } else {
+      route = "/locations";
+    }
+    url.pathname = path + route;
+    return url.href;
+  }
+
+  // src/panel/views.tsx
+  var { clip: clip2, scope: scope2, action: action2, requestOptions: requestOptions2 } = state_exports;
+  function external(snapshot2, target) {
+    if (!snapshot2.uiUrl) return "";
+    try {
+      return dagsterUrl(snapshot2.uiUrl, target);
+    } catch {
+      return "";
+    }
+  }
+  function Open({ url }) {
+    return /* @__PURE__ */ a3(
+      Button,
+      {
+        icon: "open-external",
+        variant: "ghost",
+        disabled: !url,
+        onPress: () => action2(() => shell.openExternal(url), false),
+        children: "Open in Dagster UI"
+      }
+    );
+  }
+  function Source({ result: result2, reopen }) {
+    if (!result2) return null;
+    if (result2.resolvedPath)
+      return /* @__PURE__ */ a3(Link, { onPress: reopen, children: clip2(result2.resolvedPath, 240) + (result2.lineNumber ? ":" + result2.lineNumber : "") });
+    let url = "";
+    try {
+      const candidate = new URL(result2.externalUrl ?? "");
+      if (["http:", "https:"].includes(candidate.protocol) && !candidate.username && !candidate.password)
+        url = candidate.href;
+    } catch {
+    }
+    return /* @__PURE__ */ a3(Stack, { children: [
+      /* @__PURE__ */ a3(Text, { muted: true, children: clip2(result2.reason || "Source is available remotely.", 240) }),
+      url && /* @__PURE__ */ a3(Link, { onPress: () => action2(() => shell.openExternal(url), false), children: "Open remote definition" })
+    ] });
+  }
+  function materialized(at, synced) {
+    if (at === void 0) return "Never materialized";
+    const minutes = Math.max(0, Math.floor((synced - at) / 6e4));
+    return "Materialized " + (minutes < 1 ? "just now" : minutes < 60 ? minutes + "m ago" : minutes < 1440 ? Math.floor(minutes / 60) + "h ago" : Math.floor(minutes / 1440) + "d ago");
+  }
+  var health2 = {
+    success: ["check", "Healthy"],
+    danger: ["error", "Failed"],
+    warning: ["warning", "Stale or in progress"],
+    neutral: ["layers", "Unknown"]
+  };
+  function Assets({
+    data,
+    partitionsOnly = false
+  }) {
+    const searchField = partitionsOnly ? partitionSearch : assetSearch;
+    const search = read(searchField).toLowerCase();
+    const lineage2 = external(data, { kind: "lineage", expression: read(expression) });
+    const byKey = new Map(data.assets.map((asset) => [keyOf(asset), asset]));
+    for (const node of read(graph)) if (!byKey.has(node.keyString)) byKey.set(node.keyString, node);
+    const catalog = [...byKey.values()];
+    const assets = catalog.filter((asset) => !partitionsOnly || asset.isPartitioned).filter(
+      (a5) => [a5.assetKey.join("/"), a5.groupName, a5.description].some(
+        (v3) => v3?.toLowerCase().includes(search)
+      )
+    ).slice(0, 80);
+    const locations = /* @__PURE__ */ new Map();
+    const lookup = /* @__PURE__ */ new Map();
+    for (const a5 of assets) {
+      if (!locations.has(a5.locationName)) locations.set(a5.locationName, /* @__PURE__ */ new Map());
+      const groups = locations.get(a5.locationName);
+      if (!groups.has(a5.groupName)) groups.set(a5.groupName, []);
+      const key = keyOf(a5);
+      lookup.set(key, a5);
+      groups.get(a5.groupName).push({
+        key,
+        label: clip2(a5.assetKey.join("/")),
+        description: (a5.isPartitioned ? "Partitioned \xB7 " : "") + health2[a5.status][1] + " \xB7 " + materialized(a5.lastMaterializedAt, data.syncedAt),
+        icon: health2[a5.status][0]
+      });
+    }
+    const items = [...locations].map(([name, groups]) => ({
+      key: JSON.stringify([name]),
+      label: clip2(name),
+      children: [...groups].map(([group2, children]) => ({
+        key: JSON.stringify([name, group2]),
+        label: clip2(group2),
+        children
+      }))
+    }));
+    const a4 = catalog.find(
+      (a5) => (!partitionsOnly || a5.isPartitioned) && keyOf(a5) === read(assetId)
+    );
+    const parts = read(partitions), source2 = read(source);
+    const group = a4 && selectionFor(catalog, a4, parts);
+    const selectedPartition = group?.keys.includes(read(partition)) ? read(partition) : group?.keys[0];
+    const saved = read(basket);
+    const included = !!a4 && saved.some((e3) => e3.id === keyOf(a4));
+    const launchJob = a4?.jobNames.find(
+      (j2) => j2.startsWith("__ASSET_JOB") && group?.selected.every((item) => item.jobNames.includes(j2))
+    ) ?? (group?.selected.length === 1 ? a4?.jobNames[0] : void 0);
+    const launchpad = a4 && launchJob && group?.selected.every(
+      (item) => item.locationName === a4.locationName && item.repositoryName === a4.repositoryName
+    ) && external(data, {
+      kind: "launchpad",
+      locationName: a4.locationName,
+      repositoryName: a4.repositoryName,
+      jobName: launchJob,
+      assetKeys: group.selected.map((item) => item.assetKey)
+    });
+    return /* @__PURE__ */ a3(Stack, { children: [
+      !partitionsOnly && /* @__PURE__ */ a3(Stack, { children: [
+        /* @__PURE__ */ a3(
+          Input,
+          {
+            label: "Dagster asset selection",
+            value: read(expression),
+            placeholder: 'key:"raw_orders"+',
+            maxLength: 2e3,
+            onChange: (v3) => set(expression, v3)
+          }
+        ),
+        /* @__PURE__ */ a3(
+          Button,
+          {
+            icon: "open-external",
+            disabled: !lineage2,
+            onPress: () => action2(() => shell.openExternal(lineage2), false),
+            children: read(expression).trim() ? "Review selection in Dagster DAG" : "Open Dagster DAG"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ a3(
+        Input,
+        {
+          type: "search",
+          label: partitionsOnly ? "Search partitioned assets" : "Search assets",
+          value: read(searchField),
+          maxLength: 120,
+          onChange: (v3) => set(searchField, v3)
+        }
+      ),
+      /* @__PURE__ */ a3(
+        Tree,
+        {
+          label: partitionsOnly ? "Partitioned assets" : "Assets",
+          maxHeight: "md",
+          items,
+          defaultExpanded: items.flatMap((l3) => [l3.key, ...l3.children.map((g3) => g3.key)]),
+          selected: a4 ? keyOf(a4) : void 0,
+          onSelect: ({ key }) => {
+            const item = lookup.get(key);
+            if (item) void selectAsset(item, !partitionsOnly);
+          }
+        }
+      ),
+      partitionsOnly && !assets.length && /* @__PURE__ */ a3(Text, { muted: true, children: search ? "No matching partitioned assets." : "This catalog has no partitioned assets." }),
+      partitionsOnly && !!assets.length && !a4 && /* @__PURE__ */ a3(Text, { muted: true, children: "Select an asset to see its partitions." }),
+      assets.length === 80 && /* @__PURE__ */ a3(Text, { muted: true, children: "Showing 80 assets. Search to narrow the list." }),
+      a4 && /* @__PURE__ */ a3(Card, { title: clip2(a4.assetKey.join("/")), children: /* @__PURE__ */ a3(Stack, { children: [
+        /* @__PURE__ */ a3(AssetDetails, { asset: a4 }),
+        /* @__PURE__ */ a3(
+          Source,
+          {
+            result: source2,
+            reopen: () => action2(
+              () => plugin.request(
+                "source.open",
+                { ...scope2(), ...asSource(a4) },
+                requestOptions2()
+              ),
+              false
+            )
+          }
+        ),
+        /* @__PURE__ */ a3(
+          Button,
+          {
+            disabled: !included && (saved.length >= 24 || !!group?.reason),
+            onPress: () => toggleAsset(a4, parts),
+            children: included ? "Remove from selection" : "Keep in selection"
+          }
+        ),
+        !!saved.length && /* @__PURE__ */ a3(Stack, { children: [
+          /* @__PURE__ */ a3(Text, { children: "Materialize together: " + clip2(group.selected.map((item) => item.assetKey.join("/")).join(", "), 600) }),
+          /* @__PURE__ */ a3(Button, { onPress: () => set(basket, []), children: "Clear selection" })
+        ] }),
+        group?.reason && /* @__PURE__ */ a3(Text, { tone: "warning", children: group.reason }),
+        a4.lastMaterializedAt && /* @__PURE__ */ a3(Text, { children: [
+          "Last materialized ",
+          /* @__PURE__ */ a3(RelativeTime, { at: a4.lastMaterializedAt })
+        ] }),
+        a4.isPartitioned && data.uiUrl && /* @__PURE__ */ a3(
+          Link,
+          {
+            onPress: () => action2(
+              () => shell.openExternal(
+                external(data, { kind: "partitions", assetKey: a4.assetKey })
+              ),
+              false
+            ),
+            children: "View all partitions in Dagster"
+          }
+        ),
+        parts?.kind === "single" && !!group?.keys.length && /* @__PURE__ */ a3(
+          Select,
+          {
+            label: "Partition",
+            options: options(group.keys),
+            value: selectedPartition,
+            onChange: (v3) => {
+              clearAsset();
+              set(partition, v3);
+            }
+          }
+        ),
+        parts?.kind === "multi" && /* @__PURE__ */ a3(Callout, { title: "Choose partitions in Dagster", children: launchpad ? /* @__PURE__ */ a3(Link, { onPress: () => action2(() => shell.openExternal(launchpad), false), children: "Open Launchpad" }) : /* @__PURE__ */ a3(Text, { children: "Launchpad unavailable" }) }),
+        /* @__PURE__ */ a3(Collapsible, { title: "Advanced Config", children: [
+          /* @__PURE__ */ a3(
+            Textarea,
+            {
+              label: "Run config YAML or JSON",
+              value: read(config),
+              maxLength: 3e3,
+              onChange: (v3) => set(config, v3)
+            }
+          ),
+          /* @__PURE__ */ a3(
+            Textarea,
+            {
+              label: "Tags (JSON object)",
+              value: read(tags),
+              maxLength: 1e3,
+              onChange: (v3) => set(tags, v3)
+            }
+          )
+        ] }),
+        /* @__PURE__ */ a3(Row, { wrap: true, children: [
+          /* @__PURE__ */ a3(
+            Button,
+            {
+              icon: "play",
+              tone: "accent",
+              disabled: read(busy) || !!group?.reason,
+              onPress: () => launch(async () => {
+                const tags2 = read(tags).trim() ? JSON.parse(read(tags)) : void 0;
+                if (tags2 !== void 0 && (!tags2 || typeof tags2 !== "object" || Array.isArray(tags2) || Object.values(tags2).some((v3) => typeof v3 !== "string")))
+                  throw Error("Tags must be an object with string values.");
+                return plugin.request(
+                  "dagster.materialize",
+                  {
+                    ...scope2(),
+                    assetKeys: group.selected.map((item) => item.assetKey),
+                    ...selectedPartition && {
+                      partitionKey: selectedPartition
+                    },
+                    ...read(config) && {
+                      runConfigYaml: read(config)
+                    },
+                    ...tags2 && { tags: tags2 }
+                  },
+                  requestOptions2()
+                );
+              }),
+              children: "Materialize"
+            }
+          ),
+          /* @__PURE__ */ a3(Open, { url: external(data, asSource(a4)) })
+        ] })
+      ] }) })
+    ] });
+  }
+  function Automation({ data }) {
+    const query2 = read(autoSearch).toLowerCase();
+    const matches = (a4) => a4.name.toLowerCase().includes(query2);
+    return /* @__PURE__ */ a3(Stack, { children: [
+      /* @__PURE__ */ a3(
+        Input,
+        {
+          label: "Search jobs, schedules, sensors",
+          type: "search",
+          value: read(autoSearch),
+          maxLength: 120,
+          onChange: (v3) => set(autoSearch, v3)
+        }
+      ),
+      ["jobs", "schedules", "sensors"].map((section) => {
+        const title = {
+          jobs: "Jobs",
+          schedules: "Schedules",
+          sensors: "Sensors"
+        }[section];
+        const rows = data[section].filter(
+          matches
+        );
+        return /* @__PURE__ */ a3(Collapsible, { title: title + " (" + rows.length + ")", defaultOpen: true, children: [
+          /* @__PURE__ */ a3(List, { label: title, children: rows.slice(0, 35).map((item) => {
+            const { locationName, repositoryName, name } = item;
+            const kind = {
+              jobs: "job",
+              schedules: "schedule",
+              sensors: "sensor"
+            }[section];
+            const identity = JSON.stringify([kind, locationName, repositoryName, name]);
+            return /* @__PURE__ */ a3(
+              ListItem,
+              {
+                current: identity === read(automationSelection),
+                description: clip2(locationName),
+                children: [
+                  /* @__PURE__ */ a3(
+                    Button,
+                    {
+                      variant: "ghost",
+                      onPress: () => openAutomation(identity, {
+                        kind,
+                        name,
+                        locationName,
+                        repositoryName
+                      }),
+                      children: clip2(name)
+                    }
+                  ),
+                  identity === read(automationSelection) && /* @__PURE__ */ a3(
+                    Source,
+                    {
+                      result: read(automationSource),
+                      reopen: () => openAutomation(identity, {
+                        kind,
+                        name,
+                        locationName,
+                        repositoryName
+                      })
+                    }
+                  ),
+                  kind === "job" && identity === read(automationSelection) && /* @__PURE__ */ a3(Collapsible, { title: "Job config", children: /* @__PURE__ */ a3(
+                    Textarea,
+                    {
+                      label: "Job run config YAML or JSON",
+                      maxLength: 3e3,
+                      value: read(jobConfig),
+                      onChange: (value) => set(jobConfig, value)
+                    }
+                  ) }),
+                  "status" in item ? /* @__PURE__ */ a3(Stack, { children: [
+                    /* @__PURE__ */ a3(
+                      Switch,
+                      {
+                        label: clip2(name),
+                        checked: item.status === "RUNNING",
+                        disabled: read(busy),
+                        onChange: (running) => action2(
+                          () => section === "schedules" ? plugin.request(
+                            "dagster.toggleSchedule",
+                            {
+                              ...scope2(),
+                              locationName,
+                              repositoryName,
+                              scheduleName: name,
+                              running
+                            },
+                            requestOptions2()
+                          ) : plugin.request(
+                            "dagster.toggleSensor",
+                            {
+                              ...scope2(),
+                              locationName,
+                              repositoryName,
+                              sensorName: name,
+                              running
+                            },
+                            requestOptions2()
+                          )
+                        )
+                      }
+                    ),
+                    /* @__PURE__ */ a3(Text, { muted: true, children: "cronSchedule" in item ? clip2(item.cronSchedule) : "Every " + (item.minIntervalSeconds ?? 30) + "s" }),
+                    item.tick && /* @__PURE__ */ a3(Text, { children: [
+                      "Last tick ",
+                      clip2(item.tick.status),
+                      " ",
+                      /* @__PURE__ */ a3(RelativeTime, { at: item.tick.timestamp })
+                    ] }),
+                    item.tick?.error && /* @__PURE__ */ a3(Callout, { tone: "danger", title: "Tick failed", children: /* @__PURE__ */ a3(Text, { children: clip2(item.tick.error, 200) }) })
+                  ] }) : /* @__PURE__ */ a3(
+                    Button,
+                    {
+                      icon: "play",
+                      disabled: read(busy),
+                      onPress: () => launch(
+                        () => plugin.request(
+                          "dagster.launchJob",
+                          {
+                            ...scope2(),
+                            locationName,
+                            repositoryName,
+                            jobName: name,
+                            ...identity === read(automationSelection) && read(jobConfig).trim() ? { runConfigYaml: read(jobConfig) } : {}
+                          },
+                          requestOptions2()
+                        )
+                      ),
+                      children: "Launch"
+                    }
+                  )
+                ]
+              },
+              identity
+            );
+          }) }),
+          rows.length > 35 && /* @__PURE__ */ a3(Text, { muted: true, children: "Search to see more results." })
+        ] }, section);
+      })
+    ] });
+  }
+  function Runs({ data }) {
+    const id = read(runId), run = read(detail), disabled = read(busy);
+    if (id)
+      return /* @__PURE__ */ a3(Stack, { children: [
+        /* @__PURE__ */ a3(Button, { icon: "collapse", onPress: () => showRun(""), children: "Back to Runs" }),
+        run ? /* @__PURE__ */ a3(Stack, { children: [
+          /* @__PURE__ */ a3(Row, { children: [
+            /* @__PURE__ */ a3(Heading, { level: 3, children: "Run " + clip2(id, 8) }),
+            /* @__PURE__ */ a3(Badge, { tone: run.status === "FAILURE" ? "danger" : "neutral", children: clip2(run.status) })
+          ] }),
+          /* @__PURE__ */ a3(
+            KeyValue,
+            {
+              items: [
+                { label: "Target", value: clip2(run.pipelineName) },
+                {
+                  label: "Duration",
+                  value: run.startTime && run.endTime ? ((run.endTime - run.startTime) / 1e3).toFixed(1) + "s" : "\u2014"
+                }
+              ]
+            }
+          ),
+          run.parentRunId && /* @__PURE__ */ a3(Button, { onPress: () => showRun(run.parentRunId), children: "Parent run " + clip(run.parentRunId, 12) }),
+          run.startTime && /* @__PURE__ */ a3(Text, { children: [
+            "Started ",
+            /* @__PURE__ */ a3(RelativeTime, { at: run.startTime })
+          ] }),
+          run.source?.resolvedPath && /* @__PURE__ */ a3(
+            Link,
+            {
+              onPress: () => action2(
+                () => plugin.request(
+                  "source.open",
+                  {
+                    ...scope2(),
+                    kind: "job",
+                    name: run.pipelineName,
+                    ...run.locationName && {
+                      locationName: run.locationName
+                    },
+                    ...run.repositoryName && {
+                      repositoryName: run.repositoryName
+                    },
+                    codeReferences: [
+                      {
+                        filePath: run.source.resolvedPath,
+                        ...run.source.lineNumber && {
+                          lineNumber: run.source.lineNumber
+                        }
+                      }
+                    ]
+                  },
+                  requestOptions2()
+                ),
+                false
+              ),
+              children: clip2(run.source.resolvedPath, 240) + (run.source.lineNumber ? ":" + run.source.lineNumber : "")
+            }
+          ),
+          run.agentFix && /* @__PURE__ */ a3(Callout, { title: run.agentFix === "edited" ? "Source file changed" : "Sent to agent", children: /* @__PURE__ */ a3(Text, { children: run.agentFix === "edited" ? "Use Re-execute From Failure to verify the edit." : "Return to this run to verify the fix after editing." }) }),
+          /* @__PURE__ */ a3(Toolbar, { label: "Run actions", children: [
+            /* @__PURE__ */ a3(
+              Button,
+              {
+                disabled,
+                onPress: () => launch(
+                  () => plugin.request(
+                    "dagster.reexecuteRun",
+                    { ...scope2(), runId: id, strategy: "ALL_STEPS" },
+                    requestOptions2()
+                  )
+                ),
+                children: "Re-execute"
+              }
+            ),
+            run.status === "FAILURE" && /* @__PURE__ */ a3(
+              Button,
+              {
+                disabled,
+                onPress: () => launch(
+                  () => plugin.request(
+                    "dagster.reexecuteRun",
+                    { ...scope2(), runId: id, strategy: "FROM_FAILURE" },
+                    requestOptions2()
+                  )
+                ),
+                children: "Re-execute From Failure"
+              }
+            ),
+            isActiveRun(run.status) && /* @__PURE__ */ a3(
+              Button,
+              {
+                disabled,
+                onPress: () => action2(
+                  () => plugin.request(
+                    "dagster.terminateRun",
+                    { ...scope2(), runId: id },
+                    requestOptions2()
+                  )
+                ),
+                children: "Terminate"
+              }
+            ),
+            /* @__PURE__ */ a3(Open, { url: external(data, { kind: "run", runId: id }) })
+          ] }),
+          run.status === "FAILURE" && /* @__PURE__ */ a3(Stack, { children: [
+            /* @__PURE__ */ a3(
+              Button,
+              {
+                icon: "bot",
+                variant: "solid",
+                tone: "accent",
+                disabled,
+                onPress: () => action2(
+                  () => plugin.request(
+                    "agent.sendRunError",
+                    {
+                      ...scope2(),
+                      runId: id,
+                      mode: "launch",
+                      ...read(compareKey) ? { assetKey: JSON.parse(read(compareKey)) } : {}
+                    },
+                    requestOptions2()
+                  ),
+                  false
+                ),
+                children: "Send Error to Agent"
+              }
+            ),
+            run.assetKeys.length > 0 && /* @__PURE__ */ a3(Stack, { children: [
+              /* @__PURE__ */ a3(
+                Select,
+                {
+                  label: "Asset for comparison",
+                  options: run.assetKeys.map((k3) => ({
+                    value: JSON.stringify(k3),
+                    label: k3.join("/")
+                  })),
+                  value: read(compareKey) || JSON.stringify(run.assetKeys[0]),
+                  onChange: (v3) => {
+                    set(compareKey, v3);
+                    set(comparison, "");
+                  }
+                }
+              ),
+              /* @__PURE__ */ a3(
+                Button,
+                {
+                  onPress: () => action2(async () => {
+                    const valid = guarded(), assetKey = read(compareKey);
+                    const result2 = await plugin.request(
+                      "dagster.compareFailure",
+                      {
+                        ...scope2(),
+                        runId: id,
+                        assetKey: JSON.parse(assetKey || JSON.stringify(run.assetKeys[0]))
+                      },
+                      requestOptions2()
+                    );
+                    if (valid() && read(runId) === id && read(compareKey) === assetKey)
+                      set(comparison, result2.comparison);
+                  }, false),
+                  children: "Compare with last success"
+                }
+              ),
+              read(comparison) && /* @__PURE__ */ a3(CodeView, { language: "text", code: read(comparison), wrap: true })
+            ] }),
+            !!read(targets).length && /* @__PURE__ */ a3(Row, { children: [
+              /* @__PURE__ */ a3(
+                Select,
+                {
+                  label: "Agent terminal",
+                  value: read(destination),
+                  options: read(targets).map((t3) => ({
+                    value: t3.terminalId,
+                    label: clip2(t3.title)
+                  })),
+                  onChange: (v3) => set(destination, v3)
+                }
+              ),
+              /* @__PURE__ */ a3(
+                Button,
+                {
+                  disabled,
+                  onPress: () => action2(
+                    () => plugin.request(
+                      "agent.sendRunError",
+                      {
+                        ...scope2(),
+                        runId: id,
+                        mode: "existing",
+                        ...read(compareKey) ? { assetKey: JSON.parse(read(compareKey)) } : {},
+                        terminalId: read(destination)
+                      },
+                      requestOptions2()
+                    ),
+                    false
+                  ),
+                  children: "Send to Existing Agent"
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ a3(Collapsible, { title: "Steps (" + run.steps.length + ")", children: /* @__PURE__ */ a3(Waterfall, { run, now: data.syncedAt }) }),
+          /* @__PURE__ */ a3(Collapsible, { title: "Logs", defaultOpen: true, children: [
+            /* @__PURE__ */ a3(
+              Select,
+              {
+                label: "Log level",
+                value: read(errorsOnly) ? "Errors Only" : "All",
+                options: options(["Errors Only", "All"]),
+                onChange: (v3) => {
+                  set(errorsOnly, v3 === "Errors Only");
+                  void showRun(id, false);
+                }
+              }
+            ),
+            /* @__PURE__ */ a3(
+              CodeView,
+              {
+                code: clip2(
+                  [
+                    run.error,
+                    ...run.logs.slice(-200).filter(
+                      (l3) => !read(errorsOnly) || l3.error || ["ERROR", "CRITICAL"].includes(l3.level)
+                    ).map(
+                      (l3) => [
+                        new Date(l3.timestamp).toLocaleTimeString(),
+                        l3.level,
+                        l3.stepKey,
+                        clip2(l3.message, 500),
+                        clip2(l3.error, 750)
+                      ].filter(Boolean).join(" ")
+                    )
+                  ].filter(Boolean).join("\n").split("\n").slice(0, 200).join("\n"),
+                  3800
+                ),
+                label: "Run logs",
+                language: "text",
+                lineNumbers: true,
+                wrap: true,
+                maxHeight: "md"
+              }
+            )
+          ] })
+        ] }) : /* @__PURE__ */ a3(Skeleton, { lines: 4 })
+      ] });
+    const query2 = read(runSearch).toLowerCase(), page2 = read(page);
+    const runs = (page2?.runs ?? (read(filter) === "All" ? data.runs : [])).filter((r3) => (r3.runId + " " + r3.pipelineName).toLowerCase().includes(query2)).slice(0, 200);
+    return /* @__PURE__ */ a3(Stack, { children: [
+      /* @__PURE__ */ a3(
+        Select,
+        {
+          label: "Run status",
+          value: read(filter),
+          options: options(["All", "Active", "Success", "Failure", "Canceled"]),
+          onChange: (v3) => {
+            set(filter, v3);
+            void loadPage();
+          }
+        }
+      ),
+      /* @__PURE__ */ a3(
+        Input,
+        {
+          label: "Search run ID or job",
+          type: "search",
+          value: read(runSearch),
+          maxLength: 120,
+          onChange: (v3) => set(runSearch, v3)
+        }
+      ),
+      /* @__PURE__ */ a3(
+        Table,
+        {
+          label: "Runs",
+          columns: ["Run", "Target", "Status", "Started"].map((label) => ({
+            key: label,
+            label
+          })),
+          rows: runs.map((r3) => ({
+            key: r3.runId,
+            cells: {
+              Run: clip2(r3.runId, 8),
+              Target: clip2(r3.pipelineName),
+              Status: ({ FAILURE: "\u{1F534}", SUCCESS: "\u{1F7E2}", CANCELED: "\u26AA" }[r3.status] ?? (isActiveRun(r3.status) ? "\u{1F535}" : "\u26AA")) + " " + clip2(r3.status),
+              Started: r3.startTime ? { type: "relative", at: r3.startTime } : "\u2014"
+            }
+          })),
+          selectionMode: "single",
+          emptyText: "No matching runs",
+          onSelectionChange: ({ keys }) => {
+            if (keys[0]) void showRun(keys[0]);
+          },
+          onRowAction: ({ key }) => showRun(key),
+          hasMore: page2?.hasMore,
+          onLoadMore: () => loadPage(true)
+        }
+      )
+    ] });
+  }
+
+  // src/panel/profiles.tsx
+  var draft = atom(null);
+  var originalId = atom("");
+  var secret = atom("");
+  var mapping = atom("");
+  var port = atom("");
+  var pinned = atom(false);
+  var result = atom(null);
+  var revision = 0;
+  function edit(profile, kind = "remote-oss") {
+    revision++;
+    set(originalId, "");
+    set(editor, true);
+    set(secret, "");
+    set(result, null);
+    set(
+      draft,
+      profile ?? {
+        id: "",
+        name: "",
+        url: kind === "local" ? "http://localhost:3000" : "",
+        kind,
+        auth: { mode: "none" }
+      }
+    );
+    set(
+      mapping,
+      Object.entries(profile?.local?.pathPrefixMap ?? {}).map(([a4, b]) => a4 + "=" + b).join("\n")
+    );
+    set(port, String(profile ? localPort(profile) : 3e3));
+    set(pinned, !!profile && profile.id === read(profiles)?.pinnedProfileId);
+  }
+  function ensureEditor() {
+    if (!read(draft)) edit(active());
+    else set(editor, true);
+  }
+  function clearDraft() {
+    revision++;
+    set(originalId, "");
+    set(draft, null);
+    set(secret, "");
+    set(result, null);
+  }
+  function change(fields) {
+    revision++;
+    set(result, null);
+    update(draft, (p3) => p3 ? { ...p3, ...fields } : null);
+  }
+  function profileId(name) {
+    return name.toLowerCase().replace(/[^a-z0-9_-]+/g, "-").replace(/^[^a-z0-9]+|-+$/g, "").slice(0, 64);
+  }
+  function duplicate(p3) {
+    const ids = new Set(read(profiles)?.profiles.map((item) => item.id));
+    let name = "Copy of " + p3.name;
+    for (let n2 = 2; ids.has(profileId(name)); n2++) name = "Copy " + n2 + " of " + p3.name;
+    const auth = { ...p3.auth };
+    if (auth.source === "orca-secret") auth.secretKey ||= "profile:" + p3.id + ":token";
+    edit({ ...p3, id: "", name: name.slice(0, 80), auth });
+    set(originalId, p3.id);
+  }
+  function build(p3) {
+    const name = p3.name.trim(), url = p3.url.trim(), id = p3.id || profileId(name);
+    if (!p3.id && read(profiles)?.profiles.some((existing) => existing.id === id))
+      throw Error(
+        "A profile with this name already exists. Edit the saved profile or choose another name."
+      );
+    if (!id || !name || !url) throw Error("Enter a profile name and URL.");
+    const auth = { mode: p3.auth.mode };
+    if (auth.mode !== "none") {
+      auth.source = p3.auth.source ?? "env-var";
+      if (auth.source === "env-var") auth.envVar = p3.auth.envVar ?? "";
+      else auth.secretKey = p3.auth.secretKey || "profile:" + id + ":token";
+      if (auth.mode === "basic") auth.username = p3.auth.username ?? "";
+      if (auth.mode === "custom-header") auth.headerName = p3.auth.headerName ?? "";
+    }
+    const profile = { id, name, url, auth, kind: p3.kind };
+    if (p3.sourceWorkspaceId) profile.sourceWorkspaceId = p3.sourceWorkspaceId;
+    if (p3.kind === "local" && p3.reloadLocationOnSave?.trim())
+      profile.reloadLocationOnSave = p3.reloadLocationOnSave.trim();
+    const entries = read(mapping).split("\n").map((line) => line.trim()).filter(Boolean).map((line) => {
+      const at = line.indexOf("=");
+      if (at < 1 || !line.slice(at + 1).trim())
+        throw Error("Enter each path mapping as remote=workspace.");
+      return [line.slice(0, at).trim(), line.slice(at + 1).trim()];
+    });
+    if (p3.kind === "local") {
+      const value = Number(read(port));
+      if (!Number.isInteger(value) || value < 1 || value > 65535)
+        throw Error("Enter a port between 1 and 65535.");
+      profile.local = {
+        ...p3.local,
+        port: value,
+        pathPrefixMap: Object.fromEntries(entries)
+      };
+    } else if (entries.length) profile.local = { pathPrefixMap: Object.fromEntries(entries) };
+    return profile;
+  }
+  function Profiles() {
+    const list = read(profiles), p3 = read(draft);
+    const disabled = read(busy) || read(switching), feedback = read(result);
+    const authChange = (fields) => {
+      set(secret, "");
+      change({ auth: { ...p3.auth, ...fields } });
+    };
+    function submit(test) {
+      if (!p3) return;
+      const rev = revision, workspace = scope().workspaceId;
+      return action(async () => {
+        const profile = build(p3);
+        const secretValue = profile.auth.source === "orca-secret" ? read(secret) || void 0 : void 0;
+        if (test) {
+          const r3 = await plugin.request(
+            "profiles.test",
+            { profile, ...secretValue ? { secretValue } : {} },
+            requestOptions()
+          );
+          if (rev === revision && workspace === scope().workspaceId)
+            set(result, {
+              ok: r3.ok,
+              text: r3.ok ? "Connected \xB7 Dagster " + (r3.version ?? "version unknown") : clip(r3.error || "Connection failed", 400)
+            });
+        } else {
+          await plugin.request(
+            "profiles.save",
+            {
+              ...scope(),
+              profile,
+              ...read(originalId) ? { duplicateFrom: read(originalId) } : {},
+              ...secretValue ? { secretValue } : {},
+              ...read(pinned) || read(profiles)?.pinnedProfileId === profile.id ? { pinToWorkspace: read(pinned) } : {}
+            },
+            requestOptions()
+          );
+          if (workspace !== scope().workspaceId) return;
+          if (rev === revision) {
+            clearDraft();
+            set(editor, false);
+          }
+          await reloadProfiles();
+        }
+      }, false);
+    }
+    return /* @__PURE__ */ a3(Stack, { children: [
+      /* @__PURE__ */ a3(Row, { justify: "between", children: [
+        /* @__PURE__ */ a3(
+          Button,
+          {
+            icon: "collapse",
+            onPress: () => {
+              clearDraft();
+              set(editor, false);
+            },
+            children: "Done"
+          }
+        ),
+        /* @__PURE__ */ a3(Heading, { level: 3, children: "Connection Profiles" }),
+        /* @__PURE__ */ a3(Button, { icon: "add", onPress: () => edit(), children: "New" })
+      ] }),
+      /* @__PURE__ */ a3(List, { label: "Saved profiles", children: list?.profiles.slice(0, 50).map((item) => /* @__PURE__ */ a3(
+        ListItem,
+        {
+          title: clip(item.name),
+          description: clip(item.url),
+          onPress: () => edit(item),
+          children: /* @__PURE__ */ a3(Badge, { children: item.origin ?? "user" })
+        },
+        item.id
+      )) }),
+      p3 && /* @__PURE__ */ a3(Stack, { children: [
+        /* @__PURE__ */ a3(Input, { label: "Name", value: p3.name, maxLength: 80, onChange: (name) => change({ name }) }),
+        /* @__PURE__ */ a3(
+          Select,
+          {
+            label: "Kind",
+            options: options(["local", "remote-oss", "dagster-plus"]),
+            value: p3.kind,
+            onChange: (kind) => change({ kind })
+          }
+        ),
+        /* @__PURE__ */ a3(
+          Select,
+          {
+            label: "Source worktree",
+            value: p3.sourceWorkspaceId || "",
+            options: [
+              { value: "", label: "Current workspace" },
+              ...(list?.sourceWorkspaces ?? []).map((w3) => ({ value: w3.id, label: w3.name }))
+            ],
+            onChange: (sourceWorkspaceId) => change({ sourceWorkspaceId })
+          }
+        ),
+        p3.kind === "local" && /* @__PURE__ */ a3(
+          Input,
+          {
+            label: "Reload on save \xB7 code location (optional)",
+            value: p3.reloadLocationOnSave || "",
+            onChange: (reloadLocationOnSave) => change({ reloadLocationOnSave })
+          }
+        ),
+        /* @__PURE__ */ a3(Input, { label: "URL", value: p3.url, maxLength: 1e3, onChange: (url) => change({ url }) }),
+        /* @__PURE__ */ a3(
+          Select,
+          {
+            label: "Auth mode",
+            options: options(["none", "bearer", "basic", "dagster-plus-token", "custom-header"]),
+            value: p3.auth.mode,
+            onChange: (mode) => authChange({ mode })
+          }
+        ),
+        p3.auth.mode !== "none" && /* @__PURE__ */ a3(Stack, { children: [
+          p3.auth.mode === "basic" && /* @__PURE__ */ a3(
+            Input,
+            {
+              label: "Username",
+              value: p3.auth.username ?? "",
+              onChange: (username) => authChange({ username })
+            }
+          ),
+          p3.auth.mode === "custom-header" && /* @__PURE__ */ a3(
+            Input,
+            {
+              label: "Header name",
+              value: p3.auth.headerName ?? "",
+              onChange: (headerName) => authChange({ headerName })
+            }
+          ),
+          /* @__PURE__ */ a3(
+            Select,
+            {
+              label: "Credential source",
+              value: p3.auth.source ?? "env-var",
+              options: [
+                { value: "env-var", label: "Environment Variable" },
+                { value: "orca-secret", label: "Orca Encrypted Secret" }
+              ],
+              onChange: (source2) => authChange({ source: source2 })
+            }
+          ),
+          p3.auth.source === "orca-secret" ? /* @__PURE__ */ a3(Stack, { children: [
+            /* @__PURE__ */ a3(
+              Input,
+              {
+                label: "Secret",
+                type: "password",
+                value: read(secret),
+                maxLength: 3e3,
+                onChange: (v3) => {
+                  revision++;
+                  set(secret, v3);
+                }
+              },
+              p3.id || "new"
+            ),
+            list?.keyringStatus === "os-keyring" ? /* @__PURE__ */ a3(Text, { muted: true, children: "Keyring available \xB7 Save Profile stores the secret" }) : /* @__PURE__ */ a3(Callout, { tone: "warning", title: "Keyring unavailable", children: /* @__PURE__ */ a3(Text, { children: "Choose Environment Variable to provide this credential." }) })
+          ] }) : /* @__PURE__ */ a3(Stack, { children: [
+            /* @__PURE__ */ a3(
+              Input,
+              {
+                label: "Environment variable",
+                value: p3.auth.envVar ?? "",
+                maxLength: 120,
+                onChange: (envVar) => authChange({ envVar })
+              }
+            ),
+            list?.credentialEnvPresent?.[p3.id] !== void 0 && list?.profiles.find((item) => item.id === p3.id)?.auth.envVar === p3.auth.envVar && (list.credentialEnvPresent[p3.id] ? /* @__PURE__ */ a3(Text, { muted: true, children: "Available on the Orca host" }) : /* @__PURE__ */ a3(
+              Callout,
+              {
+                tone: "warning",
+                title: "Set " + p3.auth.envVar + " in the Orca host environment"
+              }
+            ))
+          ] })
+        ] }),
+        p3.kind === "local" && /* @__PURE__ */ a3(Stack, { children: [
+          /* @__PURE__ */ a3(
+            Input,
+            {
+              label: "Start command",
+              value: p3.local?.command ?? "",
+              placeholder: "uv run dagster dev",
+              maxLength: 1e3,
+              onChange: (command) => change({ local: { ...p3.local, command } })
+            }
+          ),
+          /* @__PURE__ */ a3(
+            Input,
+            {
+              label: "Working directory",
+              value: p3.local?.cwd ?? "",
+              onChange: (cwd) => change({ local: { ...p3.local, cwd } })
+            }
+          ),
+          /* @__PURE__ */ a3(Input, { label: "Port", value: read(port), maxLength: 5, onChange: (v3) => set(port, v3) })
+        ] }),
+        /* @__PURE__ */ a3(
+          Textarea,
+          {
+            label: "Path prefix mappings",
+            value: read(mapping),
+            maxLength: 2e3,
+            onChange: (v3) => set(mapping, v3)
+          }
+        ),
+        /* @__PURE__ */ a3(
+          Checkbox,
+          {
+            label: "Pin as default for this workspace",
+            checked: read(pinned),
+            disabled: !list?.workspaceId,
+            onChange: (v3) => set(pinned, v3)
+          }
+        ),
+        feedback && /* @__PURE__ */ a3(Callout, { tone: feedback.ok ? "success" : "danger", title: feedback.text }),
+        /* @__PURE__ */ a3(Row, { wrap: true, children: [
+          p3.id && /* @__PURE__ */ a3(Button, { icon: "copy", disabled, onPress: () => duplicate(p3), children: "Duplicate" }),
+          /* @__PURE__ */ a3(Button, { disabled, onPress: () => submit(true), children: "Test Connection" }),
+          /* @__PURE__ */ a3(
+            Button,
+            {
+              disabled: disabled || p3.auth.mode !== "none" && p3.auth.source === "orca-secret" && list?.keyringStatus !== "os-keyring",
+              onPress: () => submit(false),
+              children: "Save Profile"
+            }
+          ),
+          p3.id && p3.origin !== "repo" && /* @__PURE__ */ a3(
+            Button,
+            {
+              tone: "danger",
+              disabled,
+              onPress: () => action(async () => {
+                const workspace = scope().workspaceId;
+                await plugin.request(
+                  "profiles.delete",
+                  { ...scope(), profileId: p3.id },
+                  requestOptions()
+                );
+                if (workspace === scope().workspaceId) {
+                  clearDraft();
+                  await reloadProfiles();
+                }
+              }, false),
+              children: "Delete"
+            }
+          )
+        ] })
+      ] })
+    ] });
+  }
+
+  // src/panel.tsx
+  function setup2(ctx2, workspaceReady) {
+    ctx2.subscriptions.push(plugin.on("dagster.workspaceChanged", clearDraft));
+    setup(ctx2, ensureEditor, workspaceReady);
+  }
+  function Panel() {
+    const list = read(profiles), data = read(snapshot), profile = active();
+    const status = data?.status ?? (profile ? "connecting" : "unconfigured");
+    const local = data?.localState, managed = local?.status === "managed-running";
+    const disabled = read(busy) || read(switching);
+    const localAction = runLocal;
+    const confirmation = read(localConfirmation);
+    const reload = () => action(async () => {
+      const r3 = await plugin.request("dagster.reload", scope(), requestOptions());
+      const failed = r3.results.find((l3) => !l3.ok);
+      if (failed) throw Error(failed.error ?? "Reload failed for " + failed.locationName);
+    });
+    const label = {
+      connected: "Connected",
+      connecting: "Connecting",
+      degraded: "Degraded",
+      stopped: "Stopped",
+      "auth-error": "Auth failed",
+      error: "Error",
+      unconfigured: "No connection"
+    }[status];
+    const partitionsOnly = read(tab) === "partitions";
+    const selected = partitionsOnly ? "assets" : read(tab);
+    return /* @__PURE__ */ a3(Stack, { children: [
+      /* @__PURE__ */ a3(Toolbar, { label: "Connection", children: [
+        /* @__PURE__ */ a3(
+          Select,
+          {
+            label: "Connection profile",
+            labelHidden: true,
+            value: profile?.id,
+            placeholder: "Connection profile",
+            disabled: read(switching),
+            options: (list?.profiles ?? []).slice(0, 100).map((p3) => ({ value: p3.id, label: clip(p3.name) })),
+            onChange: (v3) => {
+              clearDraft();
+              void switchProfile(v3);
+            }
+          }
+        ),
+        /* @__PURE__ */ a3(
+          Badge,
+          {
+            tone: status === "connected" ? "success" : ["error", "auth-error"].includes(status) ? "danger" : ["connecting", "degraded"].includes(status) ? "warning" : "neutral",
+            children: label
+          }
+        ),
+        /* @__PURE__ */ a3(
+          IconButton,
+          {
+            icon: "refresh",
+            label: "Refresh now",
+            disabled,
+            onPress: () => reloadProfiles()
+          }
+        ),
+        /* @__PURE__ */ a3(
+          Button,
+          {
+            icon: "settings",
+            variant: "ghost",
+            tooltip: "Manage profiles",
+            onPress: () => {
+              if (read(editor)) {
+                clearDraft();
+                set(editor, false);
+              } else edit(profile);
+            },
+            children: "Profiles"
+          }
+        )
+      ] }),
+      profile && /* @__PURE__ */ a3(Toolbar, { label: profile.kind === "local" ? "Local controls" : "Connection controls", children: [
+        profile.kind === "local" && /* @__PURE__ */ a3($, { children: [
+          /* @__PURE__ */ a3(
+            Button,
+            {
+              icon: "play",
+              disabled: disabled || managed || local?.status === "attached" || local?.status === "starting" || local?.status === "crashed",
+              onPress: () => localAction("local.start"),
+              children: "Start"
+            }
+          ),
+          /* @__PURE__ */ a3(
+            Button,
+            {
+              icon: "stop",
+              disabled: disabled || !local?.terminalId,
+              onPress: () => localAction("local.stop"),
+              children: "Stop"
+            }
+          ),
+          /* @__PURE__ */ a3(
+            Button,
+            {
+              icon: "refresh",
+              disabled: disabled || !managed && local?.status !== "crashed",
+              onPress: () => localAction("local.restart"),
+              children: "Restart"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ a3(Button, { disabled: disabled || status === "stopped", onPress: reload, children: "Reload" }),
+        profile.kind === "local" && /* @__PURE__ */ a3(
+          Button,
+          {
+            icon: "terminal",
+            disabled: !local?.terminalId || disabled,
+            onPress: () => localAction("local.focusLogs"),
+            children: "Logs"
+          }
+        ),
+        /* @__PURE__ */ a3(Text, { muted: true, size: "xs", children: [
+          profile.kind === "local" && /* @__PURE__ */ a3(Text, { children: ":" + localPort(profile, data?.uiUrl) + " \xB7 " }),
+          data?.syncedAt ? /* @__PURE__ */ a3($, { children: [
+            "Sync ",
+            /* @__PURE__ */ a3(RelativeTime, { at: data.syncedAt })
+          ] }) : label
+        ] })
+      ] }),
+      confirmation && /* @__PURE__ */ a3(Callout, { title: "Run this repository command?", tone: "warning", children: [
+        /* @__PURE__ */ a3(Text, { children: "Working directory" }),
+        /* @__PURE__ */ a3(CodeView, { code: confirmation.plan.cwd, wrap: true }),
+        /* @__PURE__ */ a3(Text, { children: "Command" }),
+        /* @__PURE__ */ a3(CodeView, { code: confirmation.plan.command, wrap: true }),
+        /* @__PURE__ */ a3(Toolbar, { label: "Confirm repository command", children: [
+          /* @__PURE__ */ a3(Button, { onPress: () => set(localConfirmation, null), children: "Cancel" }),
+          /* @__PURE__ */ a3(
+            Button,
+            {
+              tone: "accent",
+              variant: "solid",
+              disabled,
+              onPress: () => localAction(confirmation.action, confirmation.plan),
+              children: "Run command"
+            }
+          )
+        ] })
+      ] }),
+      list?.warning && /* @__PURE__ */ a3(Callout, { tone: "warning", children: /* @__PURE__ */ a3(Text, { children: clip(list.warning, 500) }) }),
+      read(launchedRun) && /* @__PURE__ */ a3(Callout, { tone: "success", title: "Run launched", children: /* @__PURE__ */ a3(
+        Button,
+        {
+          onPress: () => {
+            set(editor, false);
+            set(tab, "runs");
+            return showRun(read(launchedRun));
+          },
+          children: "View run " + clip(read(launchedRun), 80)
+        }
+      ) }),
+      read(message) && /* @__PURE__ */ a3(Callout, { tone: "danger", children: /* @__PURE__ */ a3(Text, { children: read(message) }) }),
+      read(editor) ? /* @__PURE__ */ a3(Profiles, {}) : !list || read(switching) ? /* @__PURE__ */ a3(Skeleton, { lines: 6 }) : !profile ? /* @__PURE__ */ a3(EmptyState, { title: "No Dagster connection", icon: "database", children: [
+        /* @__PURE__ */ a3(Button, { onPress: () => edit(), children: "Add Profile" }),
+        /* @__PURE__ */ a3(
+          Button,
+          {
+            disabled: disabled || !list.workspaceId,
+            onPress: () => action(async () => {
+              const workspaceId = scope().workspaceId;
+              const { profile: saved } = await plugin.request(
+                "profiles.save",
+                {
+                  workspaceId,
+                  profile: {
+                    id: "local",
+                    name: "Local Dagster",
+                    kind: "local",
+                    url: "http://localhost:3000",
+                    auth: { mode: "none" }
+                  }
+                },
+                requestOptions()
+              );
+              try {
+                await plugin.request(
+                  "local.start",
+                  { workspaceId, profileId: saved.id },
+                  requestOptions()
+                );
+              } catch (error) {
+                await reloadProfiles();
+                if (scope().workspaceId === workspaceId) fail(error);
+                return;
+              }
+              await reloadProfiles();
+            }, false),
+            children: "Start Local Dagster"
+          }
+        )
+      ] }) : !data ? /* @__PURE__ */ a3(Skeleton, { lines: 6 }) : status === "auth-error" ? /* @__PURE__ */ a3(Callout, { tone: "danger", title: "Authentication failed", children: [
+        /* @__PURE__ */ a3(Text, { children: clip(
+          [profile.auth.mode, profile.auth.envVar ?? profile.auth.secretKey, data.error].filter(Boolean).join(" \xB7 "),
+          600
+        ) }),
+        /* @__PURE__ */ a3(Button, { onPress: () => edit(profile), children: "Edit Profile" })
+      ] }) : status === "stopped" ? /* @__PURE__ */ a3(
+        EmptyState,
+        {
+          title: "Local Dagster is stopped",
+          icon: "play",
+          description: clip(local?.diagnostics, 200),
+          children: /* @__PURE__ */ a3(Button, { disabled, onPress: () => localAction("local.start"), children: "Start Local Dagster" })
+        }
+      ) : /* @__PURE__ */ a3(Stack, { children: [
+        data.error && /* @__PURE__ */ a3(Callout, { tone: "warning", children: /* @__PURE__ */ a3(Text, { children: clip(data.error, 700) }) }),
+        data.locations.filter((l3) => l3.error).slice(0, 6).map((l3) => /* @__PURE__ */ a3(Callout, { tone: "warning", title: "Code location failed to load", children: [
+          /* @__PURE__ */ a3(Collapsible, { title: clip(l3.name), children: /* @__PURE__ */ a3(CodeView, { language: "text", wrap: true, code: clip(l3.error, 2500) }) }),
+          /* @__PURE__ */ a3(
+            Button,
+            {
+              disabled,
+              onPress: () => action(
+                () => plugin.request(
+                  "agent.loadError",
+                  { ...scope(), locationName: l3.name },
+                  requestOptions()
+                ),
+                false
+              ),
+              children: "Fix Load Error with Agent"
+            }
+          ),
+          /* @__PURE__ */ a3(Button, { disabled, onPress: reload, children: "Reload" })
+        ] }, l3.name)),
+        read(backfill) && /* @__PURE__ */ a3(Text, { children: "Backfill " + read(backfill) + " \xB7 " + read(progress) }),
+        /* @__PURE__ */ a3(
+          Tabs,
+          {
+            label: "Dagster views",
+            value: selected,
+            onChange: (v3) => {
+              set(tab, v3);
+              if (v3 === "dag" && !read(index))
+                void ensureGraphIndex().catch(fail);
+              if (v3 === "runs") {
+                if (read(runId)) void showRun(read(runId));
+                else void loadPage();
+              }
+            },
+            children: [
+              /* @__PURE__ */ a3(Tab, { value: "dag", label: "DAG", icon: "branch", children: selected === "dag" && /* @__PURE__ */ a3(Graph, { data }) }),
+              /* @__PURE__ */ a3(
+                Tab,
+                {
+                  value: "assets",
+                  label: "Assets (" + (read(graph).length || data.assets.length) + ")",
+                  icon: "layers",
+                  children: selected === "assets" && /* @__PURE__ */ a3(Stack, { children: [
+                    /* @__PURE__ */ a3(Button, { onPress: () => set(tab, partitionsOnly ? "assets" : "partitions"), children: partitionsOnly ? "All assets" : "Partitioned assets" }),
+                    /* @__PURE__ */ a3(Assets, { data, partitionsOnly })
+                  ] })
+                }
+              ),
+              /* @__PURE__ */ a3(Tab, { value: "automation", label: "Automation", icon: "zap", children: selected === "automation" && /* @__PURE__ */ a3(Automation, { data }) }),
+              /* @__PURE__ */ a3(Tab, { value: "runs", label: "Runs", icon: "activity", children: selected === "runs" && /* @__PURE__ */ a3(Runs, { data }) })
+            ]
+          }
+        )
+      ] })
+    ] });
+  }
+
+  // src/frame/main.tsx
+  void mountFrame(() => Q(k(Panel, {}), document.body), setup2).catch((e3) => {
+    document.body.textContent = String(e3);
+  });
+})();
+</script></body></html>
