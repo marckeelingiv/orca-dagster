@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/marckeelingiv/orca-dagster/main/schemas/orca-dagster.schema.json",
+  "title": "Orca Dagster Plugin Repository Configuration",
+  "description": "Secret-free repository defaults for the Dagster Orca plugin (.orca-dagster.json). Never commit raw tokens or passwords.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "defaultProfile": {
+      "type": "string",
+      "description": "Profile id selected by default when opening this workspace."
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "kind", "url", "auth"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-_]{0,63}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["local", "remote-oss", "dagster-plus"]
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Base Dagster URL or GraphQL endpoint. Supports ${ENV_VAR} interpolation."
+          },
+          "auth": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["mode"],
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": ["none", "bearer", "basic", "dagster-plus-token", "custom-header"]
+              },
+              "source": {
+                "type": "string",
+                "enum": ["orca-secret", "env-var"],
+                "description": "Where credentials are resolved at runtime. Raw secrets are forbidden in this file."
+              },
+              "secretKey": {
+                "type": "string",
+                "description": "Key name in Orca encrypted secrets when source is orca-secret."
+              },
+              "envVar": {
+                "type": "string",
+                "pattern": "^[A-Z_][A-Z0-9_]*$",
+                "description": "Environment variable name when source is env-var."
+              },
+              "username": {
+                "type": "string",
+                "description": "Username for HTTP Basic auth (supports ${ENV_VAR})."
+              },
+              "headerName": {
+                "type": "string",
+                "description": "Header name when mode is custom-header."
+              }
+            }
+          },
+          "local": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "command": {
+                "type": "string",
+                "default": "uv run dagster dev"
+              },
+              "port": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65535,
+                "default": 3000
+              },
+              "cwd": {
+                "type": "string",
+                "description": "Working directory relative to the workspace root."
+              },
+              "pathPrefixMap": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Maps container or remote file path prefixes to workspace-relative paths for jump-to-source."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["profiles"]
+}

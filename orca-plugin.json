@@ -1,0 +1,184 @@
+{
+  "manifestVersion": 2,
+  "id": "dagster",
+  "name": "Dagster",
+  "version": "0.1.0",
+  "description": "Inspect Dagster assets, jobs, automation and runs from your Orca workspace.",
+  "engines": {
+    "orca": ">=1.4.259"
+  },
+  "execution": "trusted-worker",
+  "pluginApi": 1,
+  "main": "src/worker.ts",
+  "contributes": {
+    "panels": [
+      {
+        "id": "dagster-sidebar",
+        "title": "Dagster",
+        "icon": "database",
+        "entry": "dist/sidebar.html",
+        "ui": "html"
+      }
+    ],
+    "commands": [
+      {
+        "id": "dagster.openPanel",
+        "title": "Dagster: Open Sidebar"
+      },
+      {
+        "id": "dagster.reloadDefinitions",
+        "title": "Dagster: Reload Code Locations"
+      },
+      {
+        "id": "dagster.switchProfile",
+        "title": "Dagster: Switch Connection Profile"
+      },
+      {
+        "id": "dagster.local.start",
+        "title": "Dagster: Start Local Instance"
+      },
+      {
+        "id": "dagster.local.stop",
+        "title": "Dagster: Stop Local Instance"
+      },
+      {
+        "id": "dagster.local.restart",
+        "title": "Dagster: Restart Local Instance"
+      },
+      {
+        "id": "dagster.showAsset",
+        "title": "Dagster: Show Asset for Source File"
+      }
+    ],
+    "statusBarItems": [
+      {
+        "id": "dagster-status",
+        "text": "Dagster",
+        "icon": "database",
+        "command": "dagster.openPanel"
+      }
+    ],
+    "events": [
+      {
+        "on": "workspace.changed"
+      }
+    ],
+    "settings": [
+      {
+        "key": "defaultAgent",
+        "title": "Agent for failed runs",
+        "type": "string",
+        "default": "claude",
+        "enum": [
+          "aider",
+          "amp",
+          "ante",
+          "antigravity",
+          "aug",
+          "autohand",
+          "claude",
+          "claude-agent-teams",
+          "cline",
+          "codebuddy",
+          "codebuff",
+          "codex",
+          "command-code",
+          "continue",
+          "copilot",
+          "crush",
+          "cursor",
+          "devin",
+          "droid",
+          "dsh",
+          "freebuff",
+          "gemini",
+          "goose",
+          "grok",
+          "hermes",
+          "jcode",
+          "kilo",
+          "kimi",
+          "kiro",
+          "mimo-code",
+          "mistral-vibe",
+          "muse",
+          "omp",
+          "openclaude",
+          "openclaw",
+          "opencode",
+          "opencode2",
+          "pi",
+          "prime-agent",
+          "qoder",
+          "qoder-cn",
+          "qwen-code",
+          "rovo",
+          "trae",
+          "zcode"
+        ]
+      },
+      {
+        "key": "pollIntervalIdleSec",
+        "title": "Idle refresh interval (seconds)",
+        "type": "integer",
+        "minimum": 5,
+        "maximum": 300,
+        "default": 15
+      },
+      {
+        "key": "pollIntervalActiveSec",
+        "title": "Active run refresh interval (seconds)",
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 60,
+        "default": 3
+      },
+      {
+        "key": "notifyOnRunFailure",
+        "title": "Notify when a monitored run fails",
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "key": "maxRunLogLines",
+        "title": "Maximum run log entries",
+        "type": "integer",
+        "minimum": 50,
+        "maximum": 1000,
+        "default": 200
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "kind": "workspace:read"
+    },
+    {
+      "kind": "workspace:write"
+    },
+    {
+      "kind": "terminal:send"
+    },
+    {
+      "kind": "terminal:read"
+    },
+    {
+      "kind": "agent:read"
+    },
+    {
+      "kind": "agent:launch"
+    },
+    {
+      "kind": "storage:own"
+    },
+    {
+      "kind": "secrets:own"
+    },
+    {
+      "kind": "settings:own"
+    },
+    {
+      "kind": "notifications:show"
+    }
+  ]
+}

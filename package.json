@@ -1,0 +1,16 @@
+{
+  "name": "orca-dagster",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
+    "build": "node scripts/build-panel.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.28.2",
+    "linkedom": "^0.18.13",
+    "preact": "^11.2.0",
+    "typescript": "~5.9.3"
+  }
+}
