@@ -1,0 +1,38 @@
+{
+  "$schema": "./schemas/orca-dagster.schema.json",
+  "defaultProfile": "local-docker",
+  "profiles": [
+    {
+      "id": "local-docker",
+      "name": "Local (Docker)",
+      "kind": "local",
+      "url": "http://localhost:3000",
+      "auth": {
+        "mode": "none"
+      },
+      "local": {
+        "command": "docker compose -f docker/compose.yaml up",
+        "port": 3000,
+        "pathPrefixMap": {
+          "/app/src": "docker/sample_project/src"
+        }
+      }
+    },
+    {
+      "id": "remote-dev-proxy",
+      "name": "Remote Dev (Auth Proxy)",
+      "kind": "remote-oss",
+      "url": "http://localhost:3001",
+      "auth": {
+        "mode": "bearer",
+        "source": "env-var",
+        "envVar": "DAGSTER_DEV_REMOTE_TOKEN"
+      },
+      "local": {
+        "pathPrefixMap": {
+          "/app/src": "docker/sample_project/src"
+        }
+      }
+    }
+  ]
+}
